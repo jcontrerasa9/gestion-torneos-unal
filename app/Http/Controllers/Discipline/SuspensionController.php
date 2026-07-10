@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Discipline;
 
 use App\Models\Suspension;
 use Illuminate\Http\Request;

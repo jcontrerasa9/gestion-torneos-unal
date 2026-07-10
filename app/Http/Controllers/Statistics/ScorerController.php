@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Statistics;
 
 use App\Models\Scorer;
 use Illuminate\Http\Request;

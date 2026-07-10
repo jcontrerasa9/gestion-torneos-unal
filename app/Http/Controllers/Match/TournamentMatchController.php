@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Match;
 
 use App\Models\TournamentMatch;
 use Illuminate\Http\Request;

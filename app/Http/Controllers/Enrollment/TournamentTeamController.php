@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Enrollment;
 
 use App\Models\TournamentTeam;
 use Illuminate\Http\Request;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Tournament;
 
 use App\Models\Tournament;
 use Illuminate\Http\Request;

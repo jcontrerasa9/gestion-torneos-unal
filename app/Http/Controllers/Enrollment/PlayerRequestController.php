@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Enrollment;
 
 use App\Models\PlayerRequest;
 use Illuminate\Http\Request;

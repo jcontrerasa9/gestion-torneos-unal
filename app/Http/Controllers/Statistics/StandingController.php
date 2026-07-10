@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Statistics;
 
 use App\Models\Standing;
 use Illuminate\Http\Request;
