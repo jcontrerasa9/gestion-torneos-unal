@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Statistics;
 
-use App\Models\Suspension;
+use App\Models\Standing;
 use Illuminate\Http\Request;
 
-class SuspensionController extends Controller
+class StandingController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class SuspensionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Suspension $suspension)
+    public function show(Standing $standing)
     {
         //
     }
@@ -42,7 +42,7 @@ class SuspensionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Suspension $suspension)
+    public function edit(Standing $standing)
     {
         //
     }
@@ -50,7 +50,7 @@ class SuspensionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Suspension $suspension)
+    public function update(Request $request, Standing $standing)
     {
         //
     }
@@ -58,7 +58,7 @@ class SuspensionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Suspension $suspension)
+    public function destroy(Standing $standing)
     {
         //
     }

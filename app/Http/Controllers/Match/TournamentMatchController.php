@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Match;
 
-use App\Models\Tournament;
+use App\Models\TournamentMatch;
 use Illuminate\Http\Request;
 
-class TournamentController extends Controller
+class TournamentMatchController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class TournamentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Tournament $tournament)
+    public function show(TournamentMatch $tournamentMatch)
     {
         //
     }
@@ -42,7 +42,7 @@ class TournamentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Tournament $tournament)
+    public function edit(TournamentMatch $tournamentMatch)
     {
         //
     }
@@ -50,7 +50,7 @@ class TournamentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Tournament $tournament)
+    public function update(Request $request, TournamentMatch $tournamentMatch)
     {
         //
     }
@@ -58,7 +58,7 @@ class TournamentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Tournament $tournament)
+    public function destroy(TournamentMatch $tournamentMatch)
     {
         //
     }

@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Statistics;
 
+use App\Models\Scorer;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class ScorerController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -33,7 +34,7 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Scorer $scorer)
     {
         //
     }
@@ -41,7 +42,7 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Scorer $scorer)
     {
         //
     }
@@ -49,7 +50,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Scorer $scorer)
     {
         //
     }
@@ -57,7 +58,7 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Scorer $scorer)
     {
         //
     }

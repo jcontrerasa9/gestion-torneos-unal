@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Discipline;
 
-use App\Models\Scorer;
+use App\Models\Suspension;
 use Illuminate\Http\Request;
 
-class ScorerController extends Controller
+class SuspensionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class ScorerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Scorer $scorer)
+    public function show(Suspension $suspension)
     {
         //
     }
@@ -42,7 +42,7 @@ class ScorerController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Scorer $scorer)
+    public function edit(Suspension $suspension)
     {
         //
     }
@@ -50,7 +50,7 @@ class ScorerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Scorer $scorer)
+    public function update(Request $request, Suspension $suspension)
     {
         //
     }
@@ -58,7 +58,7 @@ class ScorerController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Scorer $scorer)
+    public function destroy(Suspension $suspension)
     {
         //
     }

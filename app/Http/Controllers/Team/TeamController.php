@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Team;
 
-use App\Models\TournamentTeamPlayer;
+use App\Models\Team;
 use Illuminate\Http\Request;
 
-class TournamentTeamPlayerController extends Controller
+class TeamController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class TournamentTeamPlayerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(TournamentTeamPlayer $tournamentTeamPlayer)
+    public function show(Team $team)
     {
         //
     }
@@ -42,7 +42,7 @@ class TournamentTeamPlayerController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(TournamentTeamPlayer $tournamentTeamPlayer)
+    public function edit(Team $team)
     {
         //
     }
@@ -50,7 +50,7 @@ class TournamentTeamPlayerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, TournamentTeamPlayer $tournamentTeamPlayer)
+    public function update(Request $request, Team $team)
     {
         //
     }
@@ -58,7 +58,7 @@ class TournamentTeamPlayerController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(TournamentTeamPlayer $tournamentTeamPlayer)
+    public function destroy(Team $team)
     {
         //
     }

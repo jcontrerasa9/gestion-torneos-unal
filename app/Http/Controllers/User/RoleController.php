@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
-use App\Models\PlayerRequest;
+use App\Models\Role;
 use Illuminate\Http\Request;
 
-class PlayerRequestController extends Controller
+class RoleController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class PlayerRequestController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(PlayerRequest $playerRequest)
+    public function show(Role $role)
     {
         //
     }
@@ -42,7 +42,7 @@ class PlayerRequestController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(PlayerRequest $playerRequest)
+    public function edit(Role $role)
     {
         //
     }
@@ -50,7 +50,7 @@ class PlayerRequestController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, PlayerRequest $playerRequest)
+    public function update(Request $request, Role $role)
     {
         //
     }
@@ -58,7 +58,7 @@ class PlayerRequestController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(PlayerRequest $playerRequest)
+    public function destroy(Role $role)
     {
         //
     }

@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
-use App\Models\Team;
 use Illuminate\Http\Request;
 
-class TeamController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +33,7 @@ class TeamController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Team $team)
+    public function show(string $id)
     {
         //
     }
@@ -42,7 +41,7 @@ class TeamController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Team $team)
+    public function edit(string $id)
     {
         //
     }
@@ -50,7 +49,7 @@ class TeamController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Team $team)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -58,7 +57,7 @@ class TeamController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Team $team)
+    public function destroy(string $id)
     {
         //
     }

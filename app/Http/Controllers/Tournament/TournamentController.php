@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Tournament;
 
-use App\Models\Standing;
+use App\Models\Tournament;
 use Illuminate\Http\Request;
 
-class StandingController extends Controller
+class TournamentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class StandingController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Standing $standing)
+    public function show(Tournament $tournament)
     {
         //
     }
@@ -42,7 +42,7 @@ class StandingController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Standing $standing)
+    public function edit(Tournament $tournament)
     {
         //
     }
@@ -50,7 +50,7 @@ class StandingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Standing $standing)
+    public function update(Request $request, Tournament $tournament)
     {
         //
     }
@@ -58,7 +58,7 @@ class StandingController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Standing $standing)
+    public function destroy(Tournament $tournament)
     {
         //
     }
