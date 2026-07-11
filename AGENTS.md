@@ -1,6 +1,6 @@
 # Instrucciones para agentes
 
-Este repositorio se usa como una aplicación separada: React para el frontend y Laravel para el backend/API. Mantén los cambios enfocados en el dominio y preserva la estructura modular existente.
+Este repositorio usa una arquitectura separada: React en `frontend/` y Laravel en `backend/`. Mantén los cambios enfocados en el dominio y preserva la estructura modular existente.
 
 ## Alcance del producto
 
@@ -11,7 +11,7 @@ Este repositorio se usa como una aplicación separada: React para el frontend y 
 
 ## Convenciones del proyecto
 
-- Mantén el backend organizado por dominio en `app/Http/Controllers/*` y `app/Models/*`.
+- Mantén el backend organizado por dominio en `backend/app/Http/Controllers/*` y `backend/app/Models/*`.
 - Sigue el estilo existente de controladores de recurso: valida la entrada, persiste con Eloquent y luego retorna JSON o la respuesta HTTP mínima apropiada para la API.
 - Usa redirecciones, vistas Blade o mensajes flash solo cuando una tarea involucre explícitamente páginas renderizadas por Laravel.
 - Usa migraciones para cada cambio de esquema; no edites la base de datos manualmente.
@@ -22,7 +22,7 @@ Este repositorio se usa como una aplicación separada: React para el frontend y 
 ## Validación y flujo de trabajo
 
 - Revisa el README para ver la configuración general y los comandos de ejecución antes de agregar nuevas instrucciones: [README.md](README.md).
-- Prefiere los scripts definidos en [composer.json](composer.json) y [package.json](package.json) para desarrollo y pruebas.
+- Prefiere los scripts definidos en [backend/composer.json](backend/composer.json) y [frontend/package.json](frontend/package.json) para desarrollo y pruebas.
 - Ejecuta el comando de prueba o validación más acotado posible después de cada cambio, cuando aplique.
 
 ## Recordatorios de seguridad
