@@ -12,18 +12,29 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(RoleSeeder::class);
 
-        $adminRole = Role::where('name', 'admin')->first();
+        $users = [
+            'admin' => ['Admin', 'UNAL'],
+            'organizer' => ['Organizador', 'UNAL'],
+            'captain' => ['Capitan', 'UNAL'],
+            'player' => ['Jugador', 'UNAL'],
+            'referee' => ['Arbitro', 'UNAL'],
+            'student' => ['Estudiante', 'UNAL'],
+        ];
 
-        User::firstOrCreate(
-            ['email' => 'admin@unal.edu.co'],
-            [
-                'role_id' => $adminRole->id,
-                'first_name' => 'Admin',
-                'last_name' => 'UNAL',
-                'password' => 'password',
-                'phone' => null,
-                'active' => true,
-            ]
-        );
+        foreach ($users as $roleName => $names) {
+            $role = Role::where('name', $roleName)->first();
+
+            User::firstOrCreate(
+                ['email' => "{$roleName}@unal.edu.co"],
+                [
+                    'role_id' => $role->id,
+                    'first_name' => $names[0],
+                    'last_name' => $names[1],
+                    'password' => 'password',
+                    'phone' => null,
+                    'active' => true,
+                ]
+            );
+        }
     }
 }
