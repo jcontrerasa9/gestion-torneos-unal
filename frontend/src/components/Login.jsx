@@ -1,7 +1,11 @@
 import { useState } from 'react'
 import { useAuth } from '../context/useAuth'
+import AuthLayout from './auth/AuthLayout'
+import FormField from './auth/FormField'
+import SubmitButton from './auth/SubmitButton'
+import { AlertIcon } from './icons'
 
-export default function Login() {
+export default function Login({ onSwitch }) {
   const { login } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -22,39 +26,59 @@ export default function Login() {
   }
 
   return (
-    <section id="login">
-      <h1>Torneos UNAL</h1>
-      <p>Ingresa con tu cuenta para continuar</p>
+    <AuthLayout mode="login">
+      <header className="auth__head">
+        <h1 className="auth__title">Iniciar sesión</h1>
+        <p className="auth__subtitle">
+          Accede con tus credenciales para entrar al terreno de juego.
+        </p>
+      </header>
 
-      <form onSubmit={handleSubmit}>
-        <label>
-          Email
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            autoComplete="email"
-          />
-        </label>
+      <form className="auth__form" onSubmit={handleSubmit} noValidate>
+        <FormField
+          label="Correo institucional"
+          name="email"
+          type="email"
+          iconType="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="nombre@unal.edu.co"
+          autoComplete="email"
+          required
+        />
 
-        <label>
-          Contraseña
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            autoComplete="current-password"
-          />
-        </label>
+        <FormField
+          label="Contraseña"
+          name="password"
+          type="password"
+          iconType="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="••••••••"
+          autoComplete="current-password"
+          required
+        />
 
-        {error && <p className="error">{error}</p>}
+        {error && (
+          <div className="auth__error" role="alert">
+            <AlertIcon />
+            {error}
+          </div>
+        )}
 
-        <button type="submit" disabled={submitting}>
-          {submitting ? 'Ingresando…' : 'Ingresar'}
-        </button>
+        <SubmitButton loading={submitting}>Ingresar</SubmitButton>
       </form>
-    </section>
+
+      <p className="auth__foot">
+        ¿No tienes cuenta?
+        <button
+          type="button"
+          className="auth__switch"
+          onClick={() => onSwitch?.('register')}
+        >
+          Créala en un toque
+        </button>
+      </p>
+    </AuthLayout>
   )
 }
