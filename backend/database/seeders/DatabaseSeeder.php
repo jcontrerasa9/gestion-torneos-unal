@@ -14,7 +14,6 @@ class DatabaseSeeder extends Seeder
 
         $users = [
             'admin' => ['Admin', 'UNAL'],
-            'organizer' => ['Organizador', 'UNAL'],
             'captain' => ['Capitan', 'UNAL'],
             'player' => ['Jugador', 'UNAL'],
             'referee' => ['Arbitro', 'UNAL'],

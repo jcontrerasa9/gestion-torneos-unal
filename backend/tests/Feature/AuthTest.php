@@ -13,7 +13,7 @@ class AuthTest extends TestCase
 
     private function seedRoles(): void
     {
-        $roles = ['admin', 'organizer', 'captain', 'player', 'referee', 'student'];
+        $roles = ['admin', 'captain', 'player', 'referee', 'student'];
 
         foreach ($roles as $name) {
             Role::create(['name' => $name]);
