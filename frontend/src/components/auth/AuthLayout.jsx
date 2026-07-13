@@ -1,18 +1,26 @@
 function BrandMark() {
   return (
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.2" fill="white" opacity="0.96" />
       <path
-        d="M12 2.5l2.7 2.7-1 3.8 3.7 1 1 3.8-2.7 2.7-3.7-1-2.7 2.7-1-3.8-3.7-1 1-3.8 3.7-1z"
-        fill="white"
-        opacity="0.95"
+        d="M12 6.4l2.7 1.95-1.04 3.15h-3.32L9.3 8.35 12 6.4Z"
+        fill="#7c3aed"
       />
       <path
-        d="M12 7.5l1.4 1.4-.5 1.9 1.9.5.5 1.9-1.4 1.4-1.9-.5-1.4 1.4-.5-1.9-1.9-.5.5-1.9 1.9-.5z"
+        d="M6.6 9.1l2.45 1.78-1.04 3.15M17.4 9.1l-2.45 1.78 1.04 3.15"
+        stroke="#7c3aed"
+        strokeWidth="1.1"
+        fill="none"
+      />
+      <path
+        d="M12 18.2l-2.6-1.9 1.06-3.15h3.08L14.6 16.3 12 18.2Z"
         fill="#7c3aed"
       />
     </svg>
   )
 }
+
+export { BrandMark }
 
 export default function AuthLayout({ children, mode }) {
   const isLogin = mode === 'login'
@@ -43,19 +51,9 @@ export default function AuthLayout({ children, mode }) {
           </p>
         </div>
 
-        <div className="auth__stats">
-          <div className="auth__stat">
-            <span className="auth__stat-value">6</span>
-            <span className="auth__stat-label">Roles</span>
-          </div>
-          <div className="auth__stat">
-            <span className="auth__stat-value">2</span>
-            <span className="auth__stat-label">Modalidades</span>
-          </div>
-          <div className="auth__stat">
-            <span className="auth__stat-value">∞</span>
-            <span className="auth__stat-label">Emoción</span>
-          </div>
+        <div className="auth__season">
+          <span className="auth__live-dot" aria-hidden="true" />
+          Temporada 2026 · Fase de grupos en curso
         </div>
       </aside>
 

@@ -133,7 +133,6 @@
   height: 6px;
   border-radius: 50%;
   background: var(--purple-bright);
-  box-shadow: 0 0 12px var(--purple-bright);
 }
 
 .auth__hero-title {
@@ -157,30 +156,36 @@
 }
 
 .auth__stats {
+  display: none;
+}
+
+.auth__season {
   display: flex;
-  gap: 32px;
-  padding-top: 32px;
-  border-top: 1px solid var(--line);
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-soft);
+  letter-spacing: 0.01em;
 }
 
-.auth__stat {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.auth__live-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.15);
+  animation: blink 1.8s ease-in-out infinite;
 }
 
-.auth__stat-value {
-  font-size: 26px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--text);
-}
-
-.auth__stat-label {
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-muted);
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
 }
 
 /* ---------- Form side ---------- */
@@ -228,7 +233,7 @@
 
 .auth__subtitle {
   font-size: 15px;
-  color: var(--text-muted);
+  color: var(--text-soft);
 }
 
 .auth__form {
@@ -286,7 +291,7 @@
 }
 
 .field__input::placeholder {
-  color: var(--text-dim);
+  color: var(--text-muted);
 }
 
 .field__input:hover {
