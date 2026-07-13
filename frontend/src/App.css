@@ -202,10 +202,8 @@
 .auth__panel::before {
   content: '';
   position: absolute;
-  inset-y: auto;
+  inset-block: 0;
   inset-inline-start: 0;
-  top: 0;
-  bottom: 0;
   width: 1px;
   background: var(--line);
 }
