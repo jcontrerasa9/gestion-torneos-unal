@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('teams', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('captain_id')->constrained('users')->restrictOnDelete();
+            $table->foreignId('captain_id')->nullable()->constrained('users')->restrictOnDelete();
             $table->string('name')->unique();
             $table->string('logo')->nullable();
             $table->timestamps();
