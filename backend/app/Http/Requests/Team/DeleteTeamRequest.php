@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Team;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Http\FormRequest;
 
 class DeleteTeamRequest extends FormRequest
@@ -10,8 +11,11 @@ class DeleteTeamRequest extends FormRequest
     {
         $team = $this->route('team');
 
-        return $this->user()->id === $team->captain_id
-            || $this->user()->role->name === 'admin';
+        if ($this->user()->id !== $team->captain_id && $this->user()->role->name !== 'admin') {
+            throw new AuthorizationException('You can only delete your own team.');
+        }
+
+        return true;
     }
 
     /**

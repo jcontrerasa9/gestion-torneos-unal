@@ -15,7 +15,10 @@ class TeamController extends Controller
     {
         $teams = Team::latest()->paginate(15);
 
-        return response()->json($teams);
+        return response()->json([
+            'message' => 'Teams retrieved successfully',
+            'data' => $teams,
+        ]);
     }
 
     public function store(StoreTeamRequest $request): JsonResponse
@@ -28,19 +31,28 @@ class TeamController extends Controller
 
         $team = Team::create($data);
 
-        return response()->json($team->load('captain'), 201);
+        return response()->json([
+            'message' => 'Team created successfully',
+            'data' => $team->load('captain'),
+        ], 201);
     }
 
     public function show(Team $team): JsonResponse
     {
-        return response()->json($team->load('captain'));
+        return response()->json([
+            'message' => 'Team retrieved successfully',
+            'data' => $team->load('captain'),
+        ]);
     }
 
     public function update(UpdateTeamRequest $request, Team $team): JsonResponse
     {
         $team->update($request->validated());
 
-        return response()->json($team->fresh('captain'));
+        return response()->json([
+            'message' => 'Team updated successfully',
+            'data' => $team->fresh('captain'),
+        ]);
     }
 
     public function destroy(DeleteTeamRequest $request, Team $team): JsonResponse
@@ -55,6 +67,6 @@ class TeamController extends Controller
 
         $team->delete();
 
-        return response()->json(['message' => 'Team deleted correctly'], 200);
+        return response()->json(['message' => 'Team deleted successfully'], 200);
     }
 }

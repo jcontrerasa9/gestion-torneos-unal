@@ -11,7 +11,7 @@ class StoreTeamRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // siempre true, porque el middleware ya valida que sea admin o captain
+        return true;
     }
 
     /**
@@ -40,5 +40,22 @@ class StoreTeamRequest extends FormRequest
         }
 
         return $rules;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'The team name is required.',
+            'name.string' => 'The team name must be a string.',
+            'name.max' => 'The team name must not exceed 100 characters.',
+            'name.unique' => 'A team with that name already exists.',
+            'logo.string' => 'The logo must be a string URL.',
+            'logo.max' => 'The logo URL must not exceed 255 characters.',
+            'captain_id.integer' => 'The captain ID must be a valid integer.',
+            'captain_id.exists' => 'The specified user does not exist.',
+        ];
     }
 }
