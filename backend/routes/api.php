@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Team\TeamController;
 use App\Http\Controllers\Tournament\TournamentController;
-use App\Http\Controllers\TournamentMatch\TournamentMatchController;
+use App\Http\Controllers\Match\TournamentMatchController;
 use App\Http\Controllers\User\AuthController;
 use Illuminate\Support\Facades\Route;
 
