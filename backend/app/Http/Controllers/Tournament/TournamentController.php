@@ -2,64 +2,63 @@
 
 namespace App\Http\Controllers\Tournament;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Tournament\DeleteTournamentRequest;
+use App\Http\Requests\Tournament\StoreTournamentRequest;
+use App\Http\Requests\Tournament\UpdateTournamentRequest;
 use App\Models\Tournament;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class TournamentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        $tournaments = Tournament::latest()->paginate(15);
+
+        return response()->json([
+            'message' => 'Tournaments retrieved successfully',
+            'data' => $tournaments,
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(StoreTournamentRequest $request): JsonResponse
     {
-        //
+        $tournament = Tournament::create($request->validated());
+
+        return response()->json([
+            'message' => 'Tournament created successfully',
+            'data' => $tournament,
+        ], 201);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function show(Tournament $tournament): JsonResponse
     {
-        //
+        return response()->json([
+            'message' => 'Tournament retrieved successfully',
+            'data' => $tournament->load('tournamentTeams.team'),
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Tournament $tournament)
+    public function update(UpdateTournamentRequest $request, Tournament $tournament): JsonResponse
     {
-        //
+        $tournament->update($request->validated());
+
+        return response()->json([
+            'message' => 'Tournament updated successfully',
+            'data' => $tournament->fresh('tournamentTeams.team'),
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Tournament $tournament)
+    public function destroy(DeleteTournamentRequest $request, Tournament $tournament): JsonResponse
     {
-        //
-    }
+        $hasMatches = $tournament->matches()->exists();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Tournament $tournament)
-    {
-        //
-    }
+        if ($hasMatches) {
+            return response()->json(['message' => 'Tournament has matches. Cannot delete.'], 422);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Tournament $tournament)
-    {
-        //
+        $tournament->delete();
+
+        return response()->json(['message' => 'Tournament deleted successfully']);
     }
 }

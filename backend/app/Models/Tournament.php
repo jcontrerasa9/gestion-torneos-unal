@@ -18,6 +18,10 @@ class Tournament extends Model
         'status',
     ];
 
+    protected $attributes = [
+        'status' => 'pendiente',
+    ];
+
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
