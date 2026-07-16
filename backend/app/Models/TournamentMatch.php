@@ -22,6 +22,10 @@ class TournamentMatch extends Model
         'observations',
     ];
 
+    protected $attributes = [
+        'status' => 'programado',
+    ];
+
     protected $casts = [
         'match_date' => 'date',
         'match_time' => 'datetime:H:i',
