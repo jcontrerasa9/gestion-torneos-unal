@@ -44,6 +44,14 @@ class TeamController extends Controller
 
     public function destroy(Team $team): JsonResponse
     {
+        $hasActiveTournament = $team->tournamentTeams()
+            ->whereHas('tournament', fn ($q) => $q->whereIn('status', ['pendiente', 'en_curso']))
+            ->exists();
+
+        if ($hasActiveTournament) {
+            return response()->json(['message' => 'Team is enrolled in an active tournament.'], 422);
+        }
+
         $team->delete();
 
         return response()->json(null, 204);
