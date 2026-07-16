@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -43,6 +44,41 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    public function asAdmin(): static
+    {
+        return $this->state(fn () => [
+            'role_id' => Role::where('name', 'admin')->first(),
+        ]);
+    }
+
+    public function asCaptain(): static
+    {
+        return $this->state(fn () => [
+            'role_id' => Role::where('name', 'captain')->first(),
+        ]);
+    }
+
+    public function asPlayer(): static
+    {
+        return $this->state(fn () => [
+            'role_id' => Role::where('name', 'player')->first(),
+        ]);
+    }
+
+    public function asReferee(): static
+    {
+        return $this->state(fn () => [
+            'role_id' => Role::where('name', 'referee')->first(),
+        ]);
+    }
+
+    public function asStudent(): static
+    {
+        return $this->state(fn () => [
+            'role_id' => Role::where('name', 'student')->first(),
         ]);
     }
 }

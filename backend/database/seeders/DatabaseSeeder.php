@@ -2,38 +2,29 @@
 
 namespace Database\Seeders;
 
-use App\Models\Role;
 use App\Models\User;
+use Database\Factories\TeamFactory;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $this->call(RoleSeeder::class);
+        $this->call(RoleSeeder::class); // roles estaticos
 
-        $users = [
-            'admin' => ['Admin', 'UNAL'],
-            'captain' => ['Capitan', 'UNAL'],
-            'player' => ['Jugador', 'UNAL'],
-            'referee' => ['Arbitro', 'UNAL'],
-            'student' => ['Estudiante', 'UNAL'],
-        ];
 
-        foreach ($users as $roleName => $names) {
-            $role = Role::where('name', $roleName)->first();
+        // # Datos de prueba:
 
-            User::firstOrCreate(
-                ['email' => "{$roleName}@unal.edu.co"],
-                [
-                    'role_id' => $role->id,
-                    'first_name' => $names[0],
-                    'last_name' => $names[1],
-                    'password' => 'password',
-                    'phone' => null,
-                    'active' => true,
-                ]
-            );
-        }
+        User::factory()->asAdmin()->create(['email' => 'admin@unal.edu.co']); // crea 1 admin
+        User::factory()->asReferee()->create(['email' => 'referee@unal.edu.co']); // crea 1 arbitro
+
+        
+        $captains = User::factory()->asCaptain()->count(5)->create(); // crea 5 capitanes 
+        $captains->each(fn (User $captain) =>
+            (new TeamFactory())->create(['captain_id' => $captain->id]) // para cada capitan un equipo
+        );
+
+        
+        User::factory()->asPlayer()->count(5)->create(); // crea 5 juagdores 
     }
 }
