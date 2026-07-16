@@ -11,7 +11,7 @@ class StoreTeamRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return true; // siempre true, porque el middleware ya valida que sea admin o captain
     }
 
     /**

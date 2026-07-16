@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Team;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Team\DeleteTeamRequest;
 use App\Http\Requests\Team\StoreTeamRequest;
 use App\Http\Requests\Team\UpdateTeamRequest;
 use App\Models\Team;
@@ -42,7 +43,7 @@ class TeamController extends Controller
         return response()->json($team->fresh('captain'));
     }
 
-    public function destroy(Team $team): JsonResponse
+    public function destroy(DeleteTeamRequest $request, Team $team): JsonResponse
     {
         $hasActiveTournament = $team->tournamentTeams()
             ->whereHas('tournament', fn ($q) => $q->whereIn('status', ['pendiente', 'en_curso']))
