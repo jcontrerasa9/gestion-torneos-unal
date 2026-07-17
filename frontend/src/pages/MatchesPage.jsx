@@ -1,24 +1,36 @@
 import { useCallback, useEffect, useState } from 'react'
 import * as matchesApi from '../api/matches'
+import { useAuth } from '../context/useAuth'
 import Badge from '../components/ui/Badge'
 import Pagination from '../components/ui/Pagination'
-import { AlertIcon, TrophyIcon } from '../components/icons'
+import {
+  AlertIcon,
+  EditIcon,
+  PlusIcon,
+  TrophyIcon,
+} from '../components/icons'
 import { formatDate, formatTime, matchLabels } from '../utils/format'
+import MatchFormModal from '../components/matches/MatchFormModal'
 
 const STATUS_LABEL = matchLabels
 
-function MatchesTable({ items }) {
+function MatchesTable({ items, canManage, onEdit }) {
+  const cols = canManage
+    ? 'minmax(0, 1.1fr) minmax(0, 1.5fr) auto auto auto'
+    : 'minmax(0, 1.1fr) minmax(0, 1.5fr) auto auto'
+
   return (
     <div className="table" role="table" aria-label="Partidos">
-      <div className="table__head" role="row">
+      <div className="table__head" role="row" style={{ gridTemplateColumns: cols }}>
         <div role="columnheader">Torneo · Fecha</div>
         <div role="columnheader">Partido</div>
         <div role="columnheader">Estado</div>
         <div role="columnheader">Resultado</div>
+        {canManage && <div role="columnheader">Acciones</div>}
       </div>
 
       {items.map((m) => (
-        <div key={m.id} className="table__row" role="row">
+        <div key={m.id} className="table__row" role="row" style={{ gridTemplateColumns: cols }}>
           <div className="table__cell" role="cell">
             <div className="table__stack">
               <span style={{ fontWeight: 600 }}>
@@ -63,6 +75,20 @@ function MatchesTable({ items }) {
               <span style={{ color: 'var(--text-dim)' }}>—</span>
             )}
           </div>
+
+          {canManage && (
+            <div className="table__cell table__cell--actions" role="cell">
+              <button
+                type="button"
+                className="icon-btn"
+                onClick={() => onEdit(m)}
+                aria-label={`Editar ${m.home_team?.name} vs ${m.away_team?.name}`}
+                title="Editar"
+              >
+                <EditIcon />
+              </button>
+            </div>
+          )}
         </div>
       ))}
     </div>
@@ -106,12 +132,17 @@ function EmptyState() {
 }
 
 export default function MatchesPage() {
+  const { user } = useAuth()
+  const canManage = user?.role?.name === 'admin'
 
   const [items, setItems] = useState([])
   const [page, setPage] = useState(1)
   const [lastPage, setLastPage] = useState(1)
   const [status, setStatus] = useState('loading')
   const [error, setError] = useState(null)
+
+  const [modalOpen, setModalOpen] = useState(false)
+  const [active, setActive] = useState(null)
 
   const load = useCallback(async (targetPage) => {
     setStatus('loading')
@@ -137,7 +168,22 @@ export default function MatchesPage() {
     setPage(next)
   }
 
+  function openCreate() {
+    setActive(null)
+    setModalOpen(true)
+  }
+
+  function openEdit(match) {
+    setActive(match)
+    setModalOpen(true)
+  }
+
+  function handleSaved() {
+    load(page)
+  }
+
   return (
+    <>
     <div aria-busy={status === 'loading'}>
       <header className="page__head">
         <div className="page__title-block">
@@ -146,6 +192,16 @@ export default function MatchesPage() {
             Programa y gestiona los encuentros de cada torneo de la UNAL La Nubia.
           </p>
         </div>
+        {canManage && (
+          <div className="page__actions">
+            <button type="button" className="btn btn--primary btn--sm" onClick={openCreate}>
+              <span className="btn__content">
+                <PlusIcon />
+                Nuevo partido
+              </span>
+            </button>
+          </div>
+        )}
       </header>
 
       {error && (
@@ -169,7 +225,11 @@ export default function MatchesPage() {
 
       {status === 'ready' && items.length > 0 && (
         <>
-          <MatchesTable items={items} />
+          <MatchesTable
+            items={items}
+            canManage={canManage}
+            onEdit={openEdit}
+          />
           <Pagination
             page={page}
             lastPage={lastPage}
@@ -178,5 +238,13 @@ export default function MatchesPage() {
         </>
       )}
     </div>
+
+      <MatchFormModal
+        open={modalOpen}
+        match={active}
+        onClose={() => setModalOpen(false)}
+        onSaved={handleSaved}
+      />
+    </>
   )
 }
