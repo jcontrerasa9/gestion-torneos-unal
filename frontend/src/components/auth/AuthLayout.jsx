@@ -1,26 +1,4 @@
-function BrandMark() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="9.2" fill="white" opacity="0.96" />
-      <path
-        d="M12 6.4l2.7 1.95-1.04 3.15h-3.32L9.3 8.35 12 6.4Z"
-        fill="#3b82f6"
-      />
-      <path
-        d="M6.6 9.1l2.45 1.78-1.04 3.15M17.4 9.1l-2.45 1.78 1.04 3.15"
-        stroke="#3b82f6"
-        strokeWidth="1.1"
-        fill="none"
-      />
-      <path
-        d="M12 18.2l-2.6-1.9 1.06-3.15h3.08L14.6 16.3 12 18.2Z"
-        fill="#3b82f6"
-      />
-    </svg>
-  )
-}
-
-export { BrandMark }
+import HeroBall from './HeroBall'
 
 export default function AuthLayout({ children }) {
   return (
@@ -28,7 +6,7 @@ export default function AuthLayout({ children }) {
       <aside className="auth__hero">
         <div className="auth__brand">
           <span className="auth__brand-mark">
-            <BrandMark />
+            <HeroBall width={20} height={20} />
           </span>
           Torneos UNAL · La Nubia
         </div>
@@ -53,6 +31,13 @@ export default function AuthLayout({ children }) {
           <span className="auth__live-dot" aria-hidden="true" />
           Jornada en curso · Temporada 2026
         </div>
+
+        <HeroBall
+          className="auth__hero-ball"
+          width={340}
+          height={340}
+          aria-hidden="true"
+        />
       </aside>
 
       <main className="auth__panel">

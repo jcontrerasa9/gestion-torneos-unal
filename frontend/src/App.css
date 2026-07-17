@@ -179,6 +179,16 @@
   letter-spacing: 0.01em;
 }
 
+.auth__hero-ball {
+  position: absolute;
+  bottom: -8%;
+  right: -12%;
+  color: var(--purple-light);
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: -1;
+}
+
 .auth__live-dot {
   width: 9px;
   height: 9px;
