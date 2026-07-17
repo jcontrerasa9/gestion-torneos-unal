@@ -1,5 +1,5 @@
-import HeroBall from './HeroBall'
 import soccerIllustration from '../../assets/Soccer-bro.svg'
+import ballMark from '../../assets/ball.svg'
 
 export default function AuthLayout({ children }) {
   return (
@@ -7,7 +7,7 @@ export default function AuthLayout({ children }) {
       <aside className="auth__hero">
         <div className="auth__brand">
           <span className="auth__brand-mark">
-            <HeroBall width={20} height={20} />
+            <img src={ballMark} alt="" role="presentation" />
           </span>
           Torneos UNAL · La Nubia
         </div>
