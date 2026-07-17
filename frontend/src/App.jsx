@@ -3,9 +3,10 @@ import { AuthProvider } from './context/AuthContext'
 import { useAuth } from './context/useAuth'
 import Login from './components/Login'
 import Register from './components/Register'
-import Dashboard from './components/Dashboard'
+import AppShell from './components/AppShell'
 import { BrandMark } from './components/auth/AuthLayout'
 import './App.css'
+import './shell.css'
 
 function AuthGate() {
   const { user, loading } = useAuth()
@@ -22,7 +23,7 @@ function AuthGate() {
     )
   }
 
-  if (user) return <Dashboard />
+  if (user) return <AppShell />
 
   return view === 'register' ? (
     <Register onSwitch={setView} />

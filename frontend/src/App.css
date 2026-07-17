@@ -288,6 +288,10 @@
     box-shadow 0.2s var(--ease-out);
 }
 
+.field__input--plain {
+  padding-inline: 16px;
+}
+
 .field__input::placeholder {
   color: var(--text-muted);
 }
@@ -372,6 +376,12 @@
   border-radius: 12px;
   transition: transform 0.15s var(--ease-out), box-shadow 0.2s var(--ease-out),
     background 0.2s var(--ease-out), opacity 0.2s var(--ease-out);
+}
+
+.btn--sm {
+  font-size: 13.5px;
+  padding: 10px 16px;
+  border-radius: 10px;
 }
 
 .btn--primary {
