@@ -542,6 +542,12 @@
   height: 28px;
 }
 
+.auth__loading-mark img {
+  width: 28px;
+  height: 28px;
+  filter: invert(1);
+}
+
 @keyframes pulse {
   0%,
   100% {
