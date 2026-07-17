@@ -2,15 +2,27 @@ import { useCallback, useEffect, useState } from 'react'
 import * as tournamentsApi from '../api/tournaments'
 import { useAuth } from '../context/useAuth'
 import Badge from '../components/ui/Badge'
+import ConfirmDialog from '../components/ui/ConfirmDialog'
 import Pagination from '../components/ui/Pagination'
-import { AlertIcon, EditIcon, PlusIcon, TrophyIcon } from '../components/icons'
+import {
+  AlertIcon,
+  EditIcon,
+  PlusIcon,
+  TrashIcon,
+  TrophyIcon,
+} from '../components/icons'
 import { formatDateRange, tournamentLabels } from '../utils/format'
 import TournamentFormModal from '../components/tournaments/TournamentFormModal'
 
 const MODALITY_LABEL = tournamentLabels.modality
 const STATUS_LABEL = tournamentLabels.status
 
-function TournamentsTable({ items, canManage, onEdit }) {
+function TournamentsTable({
+  items,
+  canManage,
+  onEdit,
+  onDelete,
+}) {
   const cols = canManage
     ? 'minmax(180px, 1.6fr) auto auto minmax(180px, 1.2fr) auto'
     : 'minmax(180px, 1.6fr) auto auto minmax(180px, 1.2fr)'
@@ -60,6 +72,15 @@ function TournamentsTable({ items, canManage, onEdit }) {
                 title="Editar"
               >
                 <EditIcon />
+              </button>
+              <button
+                type="button"
+                className="icon-btn is-danger"
+                onClick={() => onDelete(t)}
+                aria-label={`Eliminar ${t.name}`}
+                title="Eliminar"
+              >
+                <TrashIcon />
               </button>
             </div>
           )}
@@ -118,6 +139,10 @@ export default function TournamentsPage() {
 
   const [modalOpen, setModalOpen] = useState(false)
   const [active, setActive] = useState(null)
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [deleting, setDeleting] = useState(null)
+  const [deleteBusy, setDeleteBusy] = useState(false)
+  const [deleteError, setDeleteError] = useState(null)
 
   const load = useCallback(async (targetPage) => {
     setStatus('loading')
@@ -153,8 +178,29 @@ export default function TournamentsPage() {
     setModalOpen(true)
   }
 
+  function openDelete(tournament) {
+    setDeleting(tournament)
+    setDeleteError(null)
+    setConfirmOpen(true)
+  }
+
   function handleSaved() {
     load(page)
+  }
+
+  async function confirmDelete() {
+    setDeleteBusy(true)
+    setDeleteError(null)
+    try {
+      await tournamentsApi.remove(deleting.id)
+      setConfirmOpen(false)
+      setDeleting(null)
+      load(page)
+    } catch (err) {
+      setDeleteError(err.message)
+    } finally {
+      setDeleteBusy(false)
+    }
   }
 
   return (
@@ -205,6 +251,7 @@ export default function TournamentsPage() {
             items={items}
             canManage={canManage}
             onEdit={openEdit}
+            onDelete={openDelete}
           />
           <Pagination
             page={page}
@@ -219,6 +266,21 @@ export default function TournamentsPage() {
         tournament={active}
         onClose={() => setModalOpen(false)}
         onSaved={handleSaved}
+      />
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Eliminar torneo"
+        message={
+          deleting
+            ? `¿Seguro que quieres eliminar «${deleting.name}»? Esta acción no se puede deshacer.`
+            : ''
+        }
+        confirmLabel="Eliminar torneo"
+        error={deleteError}
+        busy={deleteBusy}
+        onConfirm={confirmDelete}
+        onClose={() => setConfirmOpen(false)}
       />
     </>
   )

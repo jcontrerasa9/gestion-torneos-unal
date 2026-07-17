@@ -551,6 +551,38 @@ dialog.modal::backdrop {
   margin-bottom: 16px;
 }
 
+.confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.confirm__icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--danger-bg);
+  border: 1px solid rgba(244, 63, 94, 0.22);
+  color: #fda4b1;
+}
+
+.confirm__icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.confirm__message {
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--text-soft);
+}
+
+.confirm__error {
+  margin-top: 8px;
+}
+
 .field__hint {
   font-size: 12px;
   color: var(--text-muted);
