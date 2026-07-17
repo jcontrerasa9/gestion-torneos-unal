@@ -7,14 +7,16 @@ import {
   AlertIcon,
   EditIcon,
   PlusIcon,
+  TrashIcon,
   TrophyIcon,
 } from '../components/icons'
 import { formatDate, formatTime, matchLabels } from '../utils/format'
 import MatchFormModal from '../components/matches/MatchFormModal'
+import ConfirmDialog from '../components/ui/ConfirmDialog'
 
 const STATUS_LABEL = matchLabels
 
-function MatchesTable({ items, canManage, onEdit }) {
+function MatchesTable({ items, canManage, onEdit, onDelete }) {
   const cols = canManage
     ? 'minmax(0, 1.1fr) minmax(0, 1.5fr) auto auto auto'
     : 'minmax(0, 1.1fr) minmax(0, 1.5fr) auto auto'
@@ -87,6 +89,15 @@ function MatchesTable({ items, canManage, onEdit }) {
               >
                 <EditIcon />
               </button>
+              <button
+                type="button"
+                className="icon-btn is-danger"
+                onClick={() => onDelete(m)}
+                aria-label={`Eliminar ${m.home_team?.name} vs ${m.away_team?.name}`}
+                title="Eliminar"
+              >
+                <TrashIcon />
+              </button>
             </div>
           )}
         </div>
@@ -143,6 +154,10 @@ export default function MatchesPage() {
 
   const [modalOpen, setModalOpen] = useState(false)
   const [active, setActive] = useState(null)
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [deleting, setDeleting] = useState(null)
+  const [deleteBusy, setDeleteBusy] = useState(false)
+  const [deleteError, setDeleteError] = useState(null)
 
   const load = useCallback(async (targetPage) => {
     setStatus('loading')
@@ -180,6 +195,27 @@ export default function MatchesPage() {
 
   function handleSaved() {
     load(page)
+  }
+
+  function openDelete(match) {
+    setDeleting(match)
+    setDeleteError(null)
+    setConfirmOpen(true)
+  }
+
+  async function confirmDelete() {
+    setDeleteBusy(true)
+    setDeleteError(null)
+    try {
+      await matchesApi.remove(deleting.id)
+      setConfirmOpen(false)
+      setDeleting(null)
+      load(page)
+    } catch (err) {
+      setDeleteError(err.message)
+    } finally {
+      setDeleteBusy(false)
+    }
   }
 
   return (
@@ -229,6 +265,7 @@ export default function MatchesPage() {
             items={items}
             canManage={canManage}
             onEdit={openEdit}
+            onDelete={openDelete}
           />
           <Pagination
             page={page}
@@ -244,6 +281,21 @@ export default function MatchesPage() {
         match={active}
         onClose={() => setModalOpen(false)}
         onSaved={handleSaved}
+      />
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Eliminar partido"
+        message={
+          deleting
+            ? `¿Seguro que quieres eliminar el partido «${deleting.home_team?.name} vs ${deleting.away_team?.name}»?`
+            : ''
+        }
+        confirmLabel="Eliminar partido"
+        error={deleteError}
+        busy={deleteBusy}
+        onConfirm={confirmDelete}
+        onClose={() => setConfirmOpen(false)}
       />
     </>
   )
