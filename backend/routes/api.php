@@ -38,6 +38,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/player-requests/{playerRequest}', [PlayerRequestController::class, 'destroy'])->name('player-requests.destroy');
     });
 
+    // Tournament Team requests
+    Route::middleware('role:admin,captain')->group(function () {
+        Route::get('/tournament-teams', [\App\Http\Controllers\Enrollment\TournamentTeamController::class, 'index'])->name('tournament-teams.index');
+        Route::post('/tournament-teams', [\App\Http\Controllers\Enrollment\TournamentTeamController::class, 'store'])->name('tournament-teams.store');
+        Route::get('/tournament-teams/{tournamentTeam}', [\App\Http\Controllers\Enrollment\TournamentTeamController::class, 'show'])->name('tournament-teams.show');
+        Route::put('/tournament-teams/{tournamentTeam}', [\App\Http\Controllers\Enrollment\TournamentTeamController::class, 'update'])->name('tournament-teams.update');
+        Route::delete('/tournament-teams/{tournamentTeam}', [\App\Http\Controllers\Enrollment\TournamentTeamController::class, 'destroy'])->name('tournament-teams.destroy');
+    });
+
     // Tournaments
     Route::apiResource('tournaments', TournamentController::class)->only(['index', 'show']);
 
