@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\Enrollment\PlayerRequestController;
+use App\Http\Controllers\Enrollment\TournamentTeamController;
+use App\Http\Controllers\Match\TournamentMatchController;
 use App\Http\Controllers\Team\TeamController;
 use App\Http\Controllers\Tournament\TournamentController;
-use App\Http\Controllers\Match\TournamentMatchController;
 use App\Http\Controllers\User\AuthController;
+use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -13,6 +15,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
+
+    Route::get('/referees', [UserController::class, 'referees'])->middleware('role:admin');
 
     // Teams
     Route::apiResource('teams', TeamController::class)->only(['index', 'show']);
@@ -40,11 +44,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Tournament Team requests
     Route::middleware('role:admin,captain')->group(function () {
-        Route::get('/tournament-teams', [\App\Http\Controllers\Enrollment\TournamentTeamController::class, 'index'])->name('tournament-teams.index');
-        Route::post('/tournament-teams', [\App\Http\Controllers\Enrollment\TournamentTeamController::class, 'store'])->name('tournament-teams.store');
-        Route::get('/tournament-teams/{tournamentTeam}', [\App\Http\Controllers\Enrollment\TournamentTeamController::class, 'show'])->name('tournament-teams.show');
-        Route::put('/tournament-teams/{tournamentTeam}', [\App\Http\Controllers\Enrollment\TournamentTeamController::class, 'update'])->name('tournament-teams.update');
-        Route::delete('/tournament-teams/{tournamentTeam}', [\App\Http\Controllers\Enrollment\TournamentTeamController::class, 'destroy'])->name('tournament-teams.destroy');
+        Route::get('/tournament-teams', [TournamentTeamController::class, 'index'])->name('tournament-teams.index');
+        Route::post('/tournament-teams', [TournamentTeamController::class, 'store'])->name('tournament-teams.store');
+        Route::get('/tournament-teams/{tournamentTeam}', [TournamentTeamController::class, 'show'])->name('tournament-teams.show');
+        Route::put('/tournament-teams/{tournamentTeam}', [TournamentTeamController::class, 'update'])->name('tournament-teams.update');
+        Route::delete('/tournament-teams/{tournamentTeam}', [TournamentTeamController::class, 'destroy'])->name('tournament-teams.destroy');
     });
 
     // Tournaments

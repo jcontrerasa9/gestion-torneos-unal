@@ -4,15 +4,7 @@ import ballMark from '../assets/ball.svg'
 import { filterNavForRole } from '../nav'
 import { LogoutIcon } from './icons'
 import TournamentsPage from '../pages/TournamentsPage'
-
-function ComingSoon({ title }) {
-  return (
-    <section className="coming">
-      <h1 className="coming__title">{title}</h1>
-      <p>Esta sección estará disponible próximamente.</p>
-    </section>
-  )
-}
+import MatchesPage from '../pages/MatchesPage'
 
 export default function AppShell() {
   const { user, logout } = useAuth()
@@ -83,7 +75,7 @@ export default function AppShell() {
 
       <main className="shell__main">
         {view === 'tournaments' && <TournamentsPage />}
-        {view === 'calendar' && <ComingSoon title="Calendario" />}
+        {view === 'matches' && <MatchesPage />}
       </main>
     </div>
   )

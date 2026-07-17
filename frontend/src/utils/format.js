@@ -21,6 +21,14 @@ export function formatDateRange(start, end) {
   return `${s} — ${e}`
 }
 
+export function formatTime(value) {
+  if (!value) return '—'
+  const time = value.slice(11, 16)
+  if (!time) return '—'
+  const [h, m] = time.split(':').map(Number)
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
+}
+
 export const tournamentLabels = {
   modality: {
     futbol5: 'Fútbol 5',
@@ -32,4 +40,11 @@ export const tournamentLabels = {
     finalizado: 'Finalizado',
     cancelado: 'Cancelado',
   },
+}
+
+export const matchLabels = {
+  programado: 'Programado',
+  en_juego: 'En juego',
+  finalizado: 'Finalizado',
+  aplazado: 'Aplazado',
 }
