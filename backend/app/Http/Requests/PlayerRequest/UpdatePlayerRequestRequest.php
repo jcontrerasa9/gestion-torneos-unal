@@ -9,7 +9,7 @@ class UpdatePlayerRequestRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        $request = $this->route('playerRequest');
+        $request = $this->route('playerRequest') ?? $this->route('player_request');
         $user = $this->user();
         $roleName = $user->role->name;
 
@@ -18,6 +18,10 @@ class UpdatePlayerRequestRequest extends FormRequest
         }
 
         if ($roleName === 'player') {
+            if ($this->has('status')) {
+                throw new AuthorizationException('Players cannot approve or reject requests.');
+            }
+
             if ($request->player_id !== $user->id) {
                 throw new AuthorizationException('You can only update your own requests.');
             }
@@ -54,7 +58,7 @@ class UpdatePlayerRequestRequest extends FormRequest
      */
     public function rules(): array
     {
-        $request = $this->route('playerRequest');
+        $request = $this->route('playerRequest') ?? $this->route('player_request');
         $user = $this->user();
         $roleName = $user->role->name;
 

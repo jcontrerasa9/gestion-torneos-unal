@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\TournamentMatch;
+namespace App\Http\Controllers\Match;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TournamentMatch\DeleteTournamentMatchRequest;

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Enrollment;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PlayerRequest\DeletePlayerRequestRequest;
+use App\Http\Requests\PlayerRequest\ShowPlayerRequestRequest;
 use App\Http\Requests\PlayerRequest\StorePlayerRequestRequest;
 use App\Http\Requests\PlayerRequest\UpdatePlayerRequestRequest;
 use App\Models\PlayerRequest;

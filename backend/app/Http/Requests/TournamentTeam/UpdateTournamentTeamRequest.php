@@ -25,8 +25,12 @@ class UpdateTournamentTeamRequest extends FormRequest
                     throw new AuthorizationException('You can only update requests while they are pending.');
                 }
 
-                if ($this->has('status')) {
-                    throw new AuthorizationException('Captains cannot modify the status field.');
+                if (!$this->has('status')) {
+                    throw new AuthorizationException('Captains can only update the status field.');
+                }
+
+                if ($this->all() !== ['status' => $this->input('status')]) {
+                    throw new AuthorizationException('Captains can only update the status field.');
                 }
 
                 return true;

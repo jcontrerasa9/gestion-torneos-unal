@@ -2,7 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Models\PlayerRequest;
 use App\Models\Role;
+use App\Models\Team;
+use App\Models\Tournament;
+use App\Models\TournamentTeam;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -133,5 +137,81 @@ class AuthTest extends TestCase
         $response = $this->getJson('/api/me');
 
         $response->assertStatus(401);
+    }
+
+    public function test_player_cannot_attempt_to_change_status_on_update_request(): void
+    {
+        $this->seedRoles();
+
+        $player = User::factory()->create(['active' => true]);
+        $player->role()->associate(Role::where('name', 'player')->first())->save();
+
+        $tournament = Tournament::factory()->create(['status' => 'pendiente']);
+        $team = Team::factory()->create();
+        $tournamentTeam = TournamentTeam::create([
+            'tournament_id' => $tournament->id,
+            'team_id' => $team->id,
+            'status' => 'pendiente',
+            'request_date' => now()->toDateString(),
+            'approval_date' => null,
+        ]);
+        $playerRequest = PlayerRequest::create([
+            'tournament_team_id' => $tournamentTeam->id,
+            'player_id' => $player->id,
+            'status' => 'pendiente',
+            'request_date' => now()->toDateString(),
+            'approval_date' => null,
+        ]);
+
+        $token = $player->createToken('test')->plainTextToken;
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
+            ->putJson('/api/player-requests/'.$playerRequest->id, [
+                'status' => 'aprobada',
+            ]);
+
+        $response->assertStatus(403)
+            ->assertJsonPath('message', 'Players cannot approve or reject requests.');
+    }
+
+    public function test_captain_cannot_attempt_to_change_status_on_update_request_for_other_team(): void
+    {
+        $this->seedRoles();
+
+        $captain = User::factory()->create(['active' => true]);
+        $captain->role()->associate(Role::where('name', 'captain')->first())->save();
+
+        $otherCaptain = User::factory()->create(['active' => true]);
+        $otherCaptain->role()->associate(Role::where('name', 'captain')->first())->save();
+
+        $player = User::factory()->create(['active' => true]);
+        $player->role()->associate(Role::where('name', 'player')->first())->save();
+
+        $tournament = Tournament::factory()->create(['status' => 'pendiente']);
+        $team = Team::factory()->create(['captain_id' => $otherCaptain->id]);
+        $tournamentTeam = TournamentTeam::create([
+            'tournament_id' => $tournament->id,
+            'team_id' => $team->id,
+            'status' => 'pendiente',
+            'request_date' => now()->toDateString(),
+            'approval_date' => null,
+        ]);
+        $playerRequest = PlayerRequest::create([
+            'tournament_team_id' => $tournamentTeam->id,
+            'player_id' => $player->id,
+            'status' => 'pendiente',
+            'request_date' => now()->toDateString(),
+            'approval_date' => null,
+        ]);
+
+        $token = $captain->createToken('test')->plainTextToken;
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
+            ->putJson('/api/player-requests/'.$playerRequest->id, [
+                'status' => 'aprobada',
+            ]);
+
+        $response->assertStatus(403)
+            ->assertJsonPath('message', 'You can only update requests for your own team.');
     }
 }
