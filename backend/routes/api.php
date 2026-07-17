@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Enrollment\PlayerRequestController;
 use App\Http\Controllers\Team\TeamController;
 use App\Http\Controllers\Tournament\TournamentController;
 use App\Http\Controllers\Match\TournamentMatchController;
@@ -20,6 +21,30 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/teams', [TeamController::class, 'store'])->name('teams.store');
         Route::put('/teams/{team}', [TeamController::class, 'update'])->name('teams.update');
         Route::delete('/teams/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
+    });
+
+    // Player requests
+    Route::apiResource('player-requests', PlayerRequestController::class)->only(['index', 'show']);
+
+    Route::middleware('role:player')->group(function () {
+        Route::post('/player-requests', [PlayerRequestController::class, 'store'])->name('player-requests.store');
+    });
+
+    Route::middleware('role:player,captain,admin')->group(function () {
+        Route::put('/player-requests/{playerRequest}', [PlayerRequestController::class, 'update'])->name('player-requests.update');
+    });
+
+    Route::middleware('role:admin')->group(function () {
+        Route::delete('/player-requests/{playerRequest}', [PlayerRequestController::class, 'destroy'])->name('player-requests.destroy');
+    });
+
+    // Tournament Team requests
+    Route::middleware('role:admin,captain')->group(function () {
+        Route::get('/tournament-teams', [\App\Http\Controllers\Enrollment\TournamentTeamController::class, 'index'])->name('tournament-teams.index');
+        Route::post('/tournament-teams', [\App\Http\Controllers\Enrollment\TournamentTeamController::class, 'store'])->name('tournament-teams.store');
+        Route::get('/tournament-teams/{tournamentTeam}', [\App\Http\Controllers\Enrollment\TournamentTeamController::class, 'show'])->name('tournament-teams.show');
+        Route::put('/tournament-teams/{tournamentTeam}', [\App\Http\Controllers\Enrollment\TournamentTeamController::class, 'update'])->name('tournament-teams.update');
+        Route::delete('/tournament-teams/{tournamentTeam}', [\App\Http\Controllers\Enrollment\TournamentTeamController::class, 'destroy'])->name('tournament-teams.destroy');
     });
 
     // Tournaments

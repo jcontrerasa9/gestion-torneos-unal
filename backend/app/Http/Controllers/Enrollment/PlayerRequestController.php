@@ -2,64 +2,73 @@
 
 namespace App\Http\Controllers\Enrollment;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\PlayerRequest\DeletePlayerRequestRequest;
+use App\Http\Requests\PlayerRequest\ShowPlayerRequestRequest;
+use App\Http\Requests\PlayerRequest\StorePlayerRequestRequest;
+use App\Http\Requests\PlayerRequest\UpdatePlayerRequestRequest;
 use App\Models\PlayerRequest;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class PlayerRequestController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        $user = auth()->user();
+        $query = PlayerRequest::query();
+
+        if ($user->role->name === 'player') {
+            $query->where('player_id', $user->id);
+        } elseif ($user->role->name === 'captain') {
+            $query->whereHas('tournamentTeam.team', function ($q) use ($user): void {
+                $q->where('captain_id', $user->id);
+            });
+        }
+
+        $requests = $query->latest()->paginate(15);
+
+        return response()->json([
+            'message' => 'Player requests retrieved successfully',
+            'data' => $requests,
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(StorePlayerRequestRequest $request): JsonResponse
     {
-        //
+        $data = $request->validated();
+        $data['request_date'] = now()->toDateString();
+        $data['status'] = $data['status'] ?? 'pendiente';
+
+        $playerRequest = PlayerRequest::create($data);
+
+        return response()->json([
+            'message' => 'Player request created successfully',
+            'data' => $playerRequest->load(['tournamentTeam.team', 'player']),
+        ], 201);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function show(ShowPlayerRequestRequest $request, PlayerRequest $playerRequest): JsonResponse
     {
-        //
+        return response()->json([
+            'message' => 'Player request retrieved successfully',
+            'data' => $playerRequest->load(['tournamentTeam.team', 'player']),
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(PlayerRequest $playerRequest)
+    public function update(UpdatePlayerRequestRequest $request, PlayerRequest $playerRequest): JsonResponse
     {
-        //
+        $playerRequest->update($request->validated());
+
+        return response()->json([
+            'message' => 'Player request updated successfully',
+            'data' => $playerRequest->fresh(['tournamentTeam.team', 'player']),
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(PlayerRequest $playerRequest)
+    public function destroy(DeletePlayerRequestRequest $request, PlayerRequest $playerRequest): JsonResponse
     {
-        //
-    }
+        $playerRequest->delete();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, PlayerRequest $playerRequest)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(PlayerRequest $playerRequest)
-    {
-        //
+        return response()->json(['message' => 'Player request deleted successfully'], 200);
     }
 }

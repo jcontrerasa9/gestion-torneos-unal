@@ -2,64 +2,69 @@
 
 namespace App\Http\Controllers\Enrollment;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\TournamentTeam\DeleteTournamentTeamRequest;
+use App\Http\Requests\TournamentTeam\ShowTournamentTeamRequest;
+use App\Http\Requests\TournamentTeam\StoreTournamentTeamRequest;
+use App\Http\Requests\TournamentTeam\UpdateTournamentTeamRequest;
 use App\Models\TournamentTeam;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class TournamentTeamController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        $requests = TournamentTeam::latest()->paginate(15);
+
+        return response()->json([
+            'message' => 'Tournament team requests retrieved successfully',
+            'data' => $requests,
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(StoreTournamentTeamRequest $request): JsonResponse
     {
-        //
+        $data = $request->validated();
+        $data['status'] = 'pendiente';
+        $data['request_date'] = now()->toDateString();
+        $data['approval_date'] = null;
+
+        $tournamentTeam = TournamentTeam::create($data);
+
+        return response()->json([
+            'message' => 'Tournament team request created successfully',
+            'data' => $tournamentTeam->load(['tournament', 'team']),
+        ], 201);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function show(ShowTournamentTeamRequest $request, TournamentTeam $tournamentTeam): JsonResponse
     {
-        //
+        return response()->json([
+            'message' => 'Tournament team request retrieved successfully',
+            'data' => $tournamentTeam->load(['tournament', 'team']),
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(TournamentTeam $tournamentTeam)
+    public function update(UpdateTournamentTeamRequest $request, TournamentTeam $tournamentTeam): JsonResponse
     {
-        //
+        $data = $request->validated();
+
+        if (array_key_exists('status', $data)) {
+            $data['approval_date'] = $data['status'] === 'aprobada' ? now()->toDateString() : null;
+        }
+
+        $tournamentTeam->update($data);
+
+        return response()->json([
+            'message' => 'Tournament team request updated successfully',
+            'data' => $tournamentTeam->fresh(['tournament', 'team']),
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(TournamentTeam $tournamentTeam)
+    public function destroy(DeleteTournamentTeamRequest $request, TournamentTeam $tournamentTeam): JsonResponse
     {
-        //
-    }
+        $tournamentTeam->delete();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, TournamentTeam $tournamentTeam)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(TournamentTeam $tournamentTeam)
-    {
-        //
+        return response()->json(['message' => 'Tournament team request deleted successfully'], 200);
     }
 }
