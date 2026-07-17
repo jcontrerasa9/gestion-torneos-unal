@@ -378,6 +378,12 @@
     background 0.2s var(--ease-out), opacity 0.2s var(--ease-out);
 }
 
+.btn--sm {
+  font-size: 13.5px;
+  padding: 10px 16px;
+  border-radius: 10px;
+}
+
 .btn--primary {
   color: #fff;
   background: linear-gradient(135deg, var(--purple-bright) 0%, var(--purple-deep) 100%);

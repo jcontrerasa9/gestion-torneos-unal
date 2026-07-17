@@ -214,7 +214,7 @@ export default function TournamentsPage() {
         </div>
         {canManage && (
           <div className="page__actions">
-            <button type="button" className="btn btn--primary" onClick={openCreate}>
+            <button type="button" className="btn btn--primary btn--sm" onClick={openCreate}>
               <span className="btn__content">
                 <PlusIcon />
                 Nuevo torneo

@@ -6,9 +6,11 @@ const dateFmt = new Intl.DateTimeFormat('es-ES', {
 
 export function formatDate(value) {
   if (!value) return '—'
-  const d = new Date(value)
-  if (Number.isNaN(d.getTime())) return '—'
-  return dateFmt.format(d)
+  const [y, m, d] = value.slice(0, 10).split('-').map(Number)
+  if (!y || !m || !d) return '—'
+  const local = new Date(y, m - 1, d)
+  if (Number.isNaN(local.getTime())) return '—'
+  return dateFmt.format(local)
 }
 
 export function formatDateRange(start, end) {
