@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Team;
 use App\Models\Tournament;
 use App\Models\TournamentMatch;
+use App\Models\TournamentTeam;
 use App\Models\User;
 use Database\Factories\TeamFactory;
 use Illuminate\Database\Seeder;
@@ -43,6 +44,26 @@ class DatabaseSeeder extends Seeder
                     'away_team_id' => $teams[$i + 1]->id,
                     'referee_id' => $referee->id,
                 ]);
+            }
+        }
+
+        // TournamentTeam 
+        $pendingTournament = Tournament::where('status', 'pendiente')->first();
+        $seedTeams = Team::query()->take(3)->get();
+
+        if ($pendingTournament && $seedTeams->isNotEmpty()) {
+            foreach ($seedTeams as $seedTeam) {
+                TournamentTeam::firstOrCreate(
+                    [
+                        'tournament_id' => $pendingTournament->id,
+                        'team_id' => $seedTeam->id,
+                    ],
+                    [
+                        'status' => 'pendiente',
+                        'request_date' => now()->toDateString(),
+                        'approval_date' => null,
+                    ]
+                );
             }
         }
     }
