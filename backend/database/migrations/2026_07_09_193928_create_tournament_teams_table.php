@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('tournament_id')->constrained('tournaments')->cascadeOnDelete();
             $table->foreignId('team_id')->constrained('teams')->cascadeOnDelete();
-            $table->string('status');
+            $table->string('status')->default('pendiente');
+            $table->date('request_date');
+            $table->date('approval_date')->nullable();
             $table->timestamps();
 
             $table->unique(['tournament_id', 'team_id']);
