@@ -18,33 +18,43 @@
   isolation: isolate;
   background:
     radial-gradient(
+      ellipse 60% 50% at 2% 5%,
+      rgba(255, 255, 240, 0.09) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 60% 50% at 98% 5%,
+      rgba(255, 255, 240, 0.07) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
       ellipse 120% 80% at 15% 0%,
-      rgba(124, 58, 237, 0.28) 0%,
+      rgba(59, 130, 246, 0.28) 0%,
       transparent 55%
     ),
     radial-gradient(
       ellipse 90% 60% at 85% 100%,
-      rgba(91, 33, 182, 0.22) 0%,
+      rgba(30, 58, 138, 0.22) 0%,
       transparent 55%
     ),
     linear-gradient(165deg, #0d0d18 0%, #08080e 100%);
   color: var(--text);
 }
 
-/* stadium field stripes */
+/* stadium field stripes — pitch mowing pattern */
 .auth__hero::before {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: repeating-linear-gradient(
-    90deg,
-    var(--field-stripe) 0,
-    var(--field-stripe) 88px,
-    transparent 88px,
-    transparent 176px
-  );
-  opacity: 0.7;
-  mask-image: linear-gradient(180deg, transparent 0%, #000 30%, #000 70%, transparent 100%);
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(13, 13, 26, 0) 0,
+      rgba(13, 13, 26, 0) 72px,
+      rgba(255, 255, 255, 0.025) 72px,
+      rgba(255, 255, 255, 0.025) 144px
+    );
+  mask-image: linear-gradient(180deg, transparent 0%, #000 35%, #000 65%, transparent 100%);
   pointer-events: none;
   z-index: -1;
 }
@@ -59,7 +69,7 @@
   height: 70%;
   background: radial-gradient(
     circle,
-    rgba(167, 139, 250, 0.18) 0%,
+    rgba(147, 197, 253, 0.18) 0%,
     transparent 60%
   );
   filter: blur(40px);
@@ -104,6 +114,12 @@
   height: 20px;
 }
 
+.auth__brand-mark img {
+  width: 20px;
+  height: 20px;
+  filter: invert(1);
+}
+
 .auth__hero-body {
   max-width: 460px;
   display: flex;
@@ -124,7 +140,7 @@
   text-transform: uppercase;
   color: var(--purple-light);
   background: var(--purple-soft);
-  border: 1px solid rgba(167, 139, 250, 0.25);
+  border: 1px solid rgba(147, 197, 253, 0.25);
 }
 
 .auth__eyebrow::before {
@@ -167,6 +183,17 @@
   font-weight: 600;
   color: var(--text-soft);
   letter-spacing: 0.01em;
+}
+
+.auth__hero-illustration {
+  position: absolute;
+  bottom: -5%;
+  right: -12%;
+  width: 72%;
+  opacity: 0.09;
+  pointer-events: none;
+  z-index: -1;
+  filter: brightness(0.6) saturate(0.4);
 }
 
 .auth__live-dot {
@@ -493,7 +520,7 @@
   background:
     radial-gradient(
       ellipse 60% 50% at 50% 0%,
-      rgba(124, 58, 237, 0.15) 0%,
+      rgba(59, 130, 246, 0.15) 0%,
       transparent 60%
     ),
     var(--bg);

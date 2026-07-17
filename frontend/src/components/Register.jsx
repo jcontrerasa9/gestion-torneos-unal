@@ -35,12 +35,12 @@ export default function Register({ onSwitch }) {
   }
 
   return (
-    <AuthLayout mode="register">
+    <AuthLayout>
       <header className="auth__head">
-        <h1 className="auth__title">Crear cuenta</h1>
+        <h1 className="auth__title">Formar parte del equipo</h1>
         <p className="auth__subtitle">
-          Únete como espectador y sigue los torneos universitarios en tiempo
-          real.
+          Regístrate y sigue los torneos de Fútbol 5 y Fútbol 11 de la UNAL
+          en directo. La cancha está esperando.
         </p>
       </header>
 

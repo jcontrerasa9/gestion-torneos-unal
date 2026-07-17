@@ -26,11 +26,11 @@ export default function Login({ onSwitch }) {
   }
 
   return (
-    <AuthLayout mode="login">
+    <AuthLayout>
       <header className="auth__head">
-        <h1 className="auth__title">Iniciar sesión</h1>
+        <h1 className="auth__title">Ingresar al campo</h1>
         <p className="auth__subtitle">
-          Accede con tus credenciales para entrar al terreno de juego.
+          Accede con tus credenciales y entra al terreno de juego.
         </p>
       </header>
 
