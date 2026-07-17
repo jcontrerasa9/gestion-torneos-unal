@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useAuth } from '../context/useAuth'
 import AuthLayout from './auth/AuthLayout'
-import FormField from './auth/FormField'
-import SubmitButton from './auth/SubmitButton'
+import FormField from './ui/FormField'
+import SubmitButton from './ui/SubmitButton'
 import { AlertIcon } from './icons'
 
 export default function Login({ onSwitch }) {
