@@ -54,6 +54,12 @@
   height: 18px;
 }
 
+.shell__brand-mark img {
+  width: 18px;
+  height: 18px;
+  filter: invert(1);
+}
+
 .shell__nav {
   display: flex;
   align-items: center;

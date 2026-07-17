@@ -4,7 +4,7 @@ import { useAuth } from './context/useAuth'
 import Login from './components/Login'
 import Register from './components/Register'
 import AppShell from './components/AppShell'
-import HeroBall from './components/auth/HeroBall'
+import ballMark from './assets/ball.svg'
 import './App.css'
 import './shell.css'
 
@@ -16,7 +16,7 @@ function AuthGate() {
     return (
       <div className="auth__loading" role="status" aria-live="polite">
         <span className="auth__loading-mark">
-          <HeroBall width={28} height={28} />
+          <img src={ballMark} alt="" role="presentation" />
         </span>
         <span className="sr-only">Cargando torneos…</span>
       </div>

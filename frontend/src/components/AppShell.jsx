@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from '../context/useAuth'
-import HeroBall from './auth/HeroBall'
+import ballMark from '../assets/ball.svg'
 import { filterNavForRole } from '../nav'
 import { LogoutIcon } from './icons'
 import TournamentsPage from '../pages/TournamentsPage'
@@ -26,7 +26,7 @@ export default function AppShell() {
       <header className="shell__topbar">
         <div className="shell__brand">
           <span className="shell__brand-mark">
-            <HeroBall width={18} height={18} />
+            <img src={ballMark} alt="" role="presentation" />
           </span>
           Torneos UNAL
         </div>
