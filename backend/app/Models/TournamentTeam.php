@@ -13,6 +13,8 @@ class TournamentTeam extends Model
         'tournament_id',
         'team_id',
         'status',
+        'request_date',
+        'approval_date',
     ];
 
     public function tournament()

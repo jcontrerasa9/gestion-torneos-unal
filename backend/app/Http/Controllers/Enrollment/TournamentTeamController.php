@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Enrollment;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\TournamentTeam\DeleteTournamentTeamRequest;
+use App\Http\Requests\TournamentTeam\StoreTournamentTeamRequest;
+use App\Http\Requests\TournamentTeam\UpdateTournamentTeamRequest;
 use App\Models\TournamentTeam;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class TournamentTeamController extends Controller
 {
@@ -19,11 +21,18 @@ class TournamentTeamController extends Controller
         ]);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StoreTournamentTeamRequest $request): JsonResponse
     {
+        $data = $request->validated();
+        $data['status'] = 'pendiente';
+        $data['request_date'] = now()->toDateString();
+        $data['approval_date'] = null;
+
+        $tournamentTeam = TournamentTeam::create($data);
+
         return response()->json([
             'message' => 'Tournament team request created successfully',
-            'data' => []
+            'data' => $tournamentTeam->load(['tournament', 'team']),
         ], 201);
     }
 
@@ -31,19 +40,27 @@ class TournamentTeamController extends Controller
     {
         return response()->json([
             'message' => 'Tournament team request retrieved successfully',
-            'data' => $tournamentTeam,
+            'data' => $tournamentTeam->load(['tournament', 'team']),
         ]);
     }
 
-    public function update(Request $request, TournamentTeam $tournamentTeam): JsonResponse
+    public function update(UpdateTournamentTeamRequest $request, TournamentTeam $tournamentTeam): JsonResponse
     {
+        $data = $request->validated();
+
+        if (array_key_exists('status', $data)) {
+            $data['approval_date'] = $data['status'] === 'aprobada' ? now()->toDateString() : null;
+        }
+
+        $tournamentTeam->update($data);
+
         return response()->json([
             'message' => 'Tournament team request updated successfully',
-            'data' => $tournamentTeam,
+            'data' => $tournamentTeam->fresh(['tournament', 'team']),
         ]);
     }
 
-    public function destroy(TournamentTeam $tournamentTeam): JsonResponse
+    public function destroy(DeleteTournamentTeamRequest $request, TournamentTeam $tournamentTeam): JsonResponse
     {
         $tournamentTeam->delete();
 
