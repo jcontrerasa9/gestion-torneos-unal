@@ -380,6 +380,206 @@
   color: var(--text);
 }
 
+/* ---------- Data table ---------- */
+
+.table {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.table__head {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.6fr) auto auto minmax(180px, 1.2fr);
+  gap: 16px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-2);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.table__row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.6fr) auto auto minmax(180px, 1.2fr);
+  gap: 16px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--line);
+  align-items: center;
+  transition: background 0.15s var(--ease-out);
+}
+
+.table__row:last-child {
+  border-bottom: 0;
+}
+
+.table__row:hover {
+  background: var(--surface-2);
+}
+
+.table__cell {
+  font-size: 14px;
+  color: var(--text);
+  min-width: 0;
+}
+
+.table__cell--primary {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.table__cell--meta {
+  font-size: 13px;
+  color: var(--text-soft);
+}
+
+.table__stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.table__stack-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table__badges {
+  display: inline-flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* ---------- Skeleton rows ---------- */
+
+.skeleton-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.6fr) auto auto minmax(180px, 1.2fr);
+  gap: 16px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--line);
+  align-items: center;
+}
+
+.skeleton-row:last-child {
+  border-bottom: 0;
+}
+
+.skeleton {
+  display: block;
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    var(--surface-2) 0%,
+    var(--surface-3) 50%,
+    var(--surface-2) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+.skeleton--sm {
+  width: 64px;
+  height: 18px;
+  border-radius: 999px;
+}
+
+.skeleton--md {
+  width: 120px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ---------- Error banner ---------- */
+
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  background: var(--danger-bg);
+  border: 1px solid rgba(244, 63, 94, 0.22);
+  color: #fda4b1;
+  font-size: 14px;
+}
+
+.error-banner svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* ---------- Pagination ---------- */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.pagination__btn {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--text-soft);
+  cursor: pointer;
+  transition: color 0.2s var(--ease-out), border-color 0.2s var(--ease-out),
+    background 0.2s var(--ease-out);
+}
+
+.pagination__btn:hover:not(:disabled) {
+  color: var(--text);
+  border-color: var(--line-strong);
+  background: var(--surface-2);
+}
+
+.pagination__btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.pagination__btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.pagination__info {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.pagination__info strong {
+  color: var(--text-soft);
+}
+
 /* ---------- Responsive ---------- */
 
 @media (max-width: 720px) {
@@ -403,6 +603,26 @@
 
   .page__title {
     font-size: 23px;
+  }
+
+  .table,
+  .table__head,
+  .table__row,
+  .skeleton-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .table__head {
+    display: none;
+  }
+
+  .table__row {
+    padding: 16px 18px;
+  }
+
+  .table__cell--meta {
+    font-size: 12px;
   }
 }
 
