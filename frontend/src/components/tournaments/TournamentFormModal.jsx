@@ -111,7 +111,7 @@ export default function TournamentFormModal({
           >
             Cancelar
           </button>
-          <SubmitButton loading={submitting} disabled={!canManage}>
+          <SubmitButton loading={submitting} disabled={!canManage} form="tournament-form">
             {submitLabel}
           </SubmitButton>
         </>
@@ -124,7 +124,7 @@ export default function TournamentFormModal({
         </div>
       )}
 
-      <form className="auth__form" onSubmit={handleSubmit} noValidate>
+      <form id="tournament-form" className="auth__form" onSubmit={handleSubmit} noValidate>
         <FormField
           label="Nombre"
           name="name"
