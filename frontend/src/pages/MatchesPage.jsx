@@ -110,7 +110,7 @@ function MatchesSkeleton() {
   return (
     <div className="table" aria-hidden="true">
       <div className="table__head">
-        <div>Fecha</div>
+        <div>Torneo · Fecha</div>
         <div>Partido</div>
         <div>Estado</div>
         <div>Resultado</div>
