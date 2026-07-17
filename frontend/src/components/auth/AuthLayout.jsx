@@ -22,9 +22,7 @@ function BrandMark() {
 
 export { BrandMark }
 
-export default function AuthLayout({ children, mode }) {
-  const isLogin = mode === 'login'
-
+export default function AuthLayout({ children }) {
   return (
     <div className="auth">
       <aside className="auth__hero">
@@ -37,7 +35,7 @@ export default function AuthLayout({ children, mode }) {
 
         <div className="auth__hero-body">
           <span className="auth__eyebrow">
-            {isLogin ? 'Bienvenido de nuevo' : 'Únete a la competencia'}
+            Fútbol 5 · Fútbol 11
           </span>
           <h1 className="auth__hero-title">
             Donde cada <em>partido</em>
@@ -45,15 +43,15 @@ export default function AuthLayout({ children, mode }) {
             define la <em>gloria</em>.
           </h1>
           <p className="auth__hero-text">
-            Gestiona torneos de Fútbol 5 y Fútbol 11, sigue partidos en
-            tiempo real y consulta tablas, estadísticas y sanciones de los
-            campeonatos universitarios de la UNAL La Nubia.
+            La plataforma oficial de torneos universitarios de la UNAL
+            La Nubia. Sigue partidos en vivo, consulta estadísticas
+            y gestiona equipos en cada jornada.
           </p>
         </div>
 
         <div className="auth__season">
           <span className="auth__live-dot" aria-hidden="true" />
-          Temporada 2026 · Fase de grupos en curso
+          Jornada en curso · Temporada 2026
         </div>
       </aside>
 
