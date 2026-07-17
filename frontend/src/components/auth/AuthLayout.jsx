@@ -1,4 +1,5 @@
 import HeroBall from './HeroBall'
+import soccerIllustration from '../../assets/Soccer-bro.svg'
 
 export default function AuthLayout({ children }) {
   return (
@@ -32,11 +33,11 @@ export default function AuthLayout({ children }) {
           Jornada en curso · Temporada 2026
         </div>
 
-        <HeroBall
-          className="auth__hero-ball"
-          width={340}
-          height={340}
-          aria-hidden="true"
+        <img
+          className="auth__hero-illustration"
+          src={soccerIllustration}
+          alt=""
+          role="presentation"
         />
       </aside>
 

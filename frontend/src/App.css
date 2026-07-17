@@ -179,14 +179,15 @@
   letter-spacing: 0.01em;
 }
 
-.auth__hero-ball {
+.auth__hero-illustration {
   position: absolute;
-  bottom: -8%;
+  bottom: -5%;
   right: -12%;
-  color: var(--purple-light);
-  opacity: 0.06;
+  width: 72%;
+  opacity: 0.09;
   pointer-events: none;
   z-index: -1;
+  filter: brightness(0.6) saturate(0.4);
 }
 
 .auth__live-dot {
