@@ -16,16 +16,46 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(RoleSeeder::class);
 
-        // Users
-        User::factory()->asAdmin()->create(['email' => 'admin@unal.edu.co']);
-        User::factory()->asReferee()->create(['email' => 'referee@unal.edu.co']);
+        // Explicit test users with known credentials
+        User::factory()->asAdmin()->create([
+            'email' => 'admin@unal.edu.co',
+            'first_name' => 'Admin',
+            'last_name' => 'UNAL',
+        ]);
 
-        $captains = User::factory()->asCaptain()->count(5)->create();
-        $captains->each(fn (User $captain) =>
-            (new TeamFactory())->create(['captain_id' => $captain->id])
+        $referee = User::factory()->asReferee()->create([
+            'email' => 'referee@unal.edu.co',
+            'first_name' => 'Árbitro',
+            'last_name' => 'UNAL',
+        ]);
+
+        User::factory()->asStudent()->create([
+            'email' => 'student@unal.edu.co',
+            'first_name' => 'Estudiante',
+            'last_name' => 'UNAL',
+        ]);
+
+        $captainFixed = User::factory()->asCaptain()->create([
+            'email' => 'captain@unal.edu.co',
+            'first_name' => 'Capitán',
+            'last_name' => 'UNAL',
+        ]);
+
+        User::factory()->asPlayer()->create([
+            'email' => 'player@unal.edu.co',
+            'first_name' => 'Jugador',
+            'last_name' => 'UNAL',
+        ]);
+
+        // Remaining captains with generated emails so we have 5 teams
+        $randomCaptains = User::factory()->asCaptain()->count(4)->create();
+        $allCaptains = $randomCaptains->prepend($captainFixed);
+
+        $allCaptains->each(fn (User $captain) => (new TeamFactory)->create(['captain_id' => $captain->id])
         );
 
-        User::factory()->asPlayer()->count(5)->create();
+        // Remaining players
+        User::factory()->asPlayer()->count(4)->create();
 
         // Tournaments
         $pending = Tournament::factory()->create(['name' => 'Liga BetPlay Apertura', 'status' => 'pendiente']);
@@ -34,7 +64,6 @@ class DatabaseSeeder extends Seeder
 
         // Matches per tournament
         $teams = Team::all();
-        $referee = User::where('role_id', '=', 4)->first();
 
         foreach ([$pending, $active, $finished] as $tournament) {
             for ($i = 0; $i < 4; $i++) {
@@ -47,7 +76,7 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        // TournamentTeam 
+        // TournamentTeam enrollment
         $pendingTournament = Tournament::where('status', 'pendiente')->first();
         $seedTeams = Team::query()->take(3)->get();
 
