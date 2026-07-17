@@ -4,17 +4,17 @@ function BrandMark() {
       <circle cx="12" cy="12" r="9.2" fill="white" opacity="0.96" />
       <path
         d="M12 6.4l2.7 1.95-1.04 3.15h-3.32L9.3 8.35 12 6.4Z"
-        fill="#7c3aed"
+        fill="#3b82f6"
       />
       <path
         d="M6.6 9.1l2.45 1.78-1.04 3.15M17.4 9.1l-2.45 1.78 1.04 3.15"
-        stroke="#7c3aed"
+        stroke="#3b82f6"
         strokeWidth="1.1"
         fill="none"
       />
       <path
         d="M12 18.2l-2.6-1.9 1.06-3.15h3.08L14.6 16.3 12 18.2Z"
-        fill="#7c3aed"
+        fill="#3b82f6"
       />
     </svg>
   )

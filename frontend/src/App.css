@@ -19,12 +19,12 @@
   background:
     radial-gradient(
       ellipse 120% 80% at 15% 0%,
-      rgba(124, 58, 237, 0.28) 0%,
+      rgba(59, 130, 246, 0.28) 0%,
       transparent 55%
     ),
     radial-gradient(
       ellipse 90% 60% at 85% 100%,
-      rgba(91, 33, 182, 0.22) 0%,
+      rgba(30, 58, 138, 0.22) 0%,
       transparent 55%
     ),
     linear-gradient(165deg, #0d0d18 0%, #08080e 100%);
@@ -59,7 +59,7 @@
   height: 70%;
   background: radial-gradient(
     circle,
-    rgba(167, 139, 250, 0.18) 0%,
+    rgba(147, 197, 253, 0.18) 0%,
     transparent 60%
   );
   filter: blur(40px);
@@ -124,7 +124,7 @@
   text-transform: uppercase;
   color: var(--purple-light);
   background: var(--purple-soft);
-  border: 1px solid rgba(167, 139, 250, 0.25);
+  border: 1px solid rgba(147, 197, 253, 0.25);
 }
 
 .auth__eyebrow::before {
@@ -493,7 +493,7 @@
   background:
     radial-gradient(
       ellipse 60% 50% at 50% 0%,
-      rgba(124, 58, 237, 0.15) 0%,
+      rgba(59, 130, 246, 0.15) 0%,
       transparent 60%
     ),
     var(--bg);
