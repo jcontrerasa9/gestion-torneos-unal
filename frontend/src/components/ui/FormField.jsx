@@ -26,6 +26,8 @@ export default function FormField({
   autoComplete,
   required,
   iconType,
+  hint,
+  error,
 }) {
   const Icon = icons[iconType ?? type]
   const [show, setShow] = useState(false)
@@ -45,7 +47,9 @@ export default function FormField({
           id={name}
           name={name}
           type={inputType}
-          className="field__input"
+          className={
+            Icon ? 'field__input' : 'field__input field__input--plain'
+          }
           value={value}
           onChange={onChange}
           placeholder={placeholder}
@@ -64,6 +68,8 @@ export default function FormField({
           </button>
         )}
       </div>
+      {hint && !error && <span className="field__hint">{hint}</span>}
+      {error && <span className="field__error">{error}</span>}
     </div>
   )
 }

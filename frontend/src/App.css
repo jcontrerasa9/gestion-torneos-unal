@@ -288,6 +288,10 @@
     box-shadow 0.2s var(--ease-out);
 }
 
+.field__input--plain {
+  padding-inline: 16px;
+}
+
 .field__input::placeholder {
   color: var(--text-muted);
 }

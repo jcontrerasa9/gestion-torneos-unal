@@ -380,6 +380,191 @@
   color: var(--text);
 }
 
+/* ---------- Select field ---------- */
+
+.field__select {
+  width: 100%;
+  font: inherit;
+  font-size: 15px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%237e7e8e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 42px;
+  transition: border-color 0.2s var(--ease-out), background 0.2s var(--ease-out),
+    box-shadow 0.2s var(--ease-out);
+}
+
+.field__select:hover {
+  border-color: var(--line-strong);
+}
+
+.field__select:focus {
+  outline: none;
+  border-color: var(--purple-bright);
+  background-color: var(--surface-2);
+  box-shadow: 0 0 0 4px var(--purple-soft);
+}
+
+.field__select:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+
+.field__textarea {
+  width: 100%;
+  font: inherit;
+  font-size: 15px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 16px;
+  resize: vertical;
+  min-height: 88px;
+  transition: border-color 0.2s var(--ease-out), background 0.2s var(--ease-out),
+    box-shadow 0.2s var(--ease-out);
+}
+
+.field__textarea:hover {
+  border-color: var(--line-strong);
+}
+
+.field__textarea:focus {
+  outline: none;
+  border-color: var(--purple-bright);
+  background: var(--surface-2);
+  box-shadow: 0 0 0 4px var(--purple-soft);
+}
+
+select.field__select option {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+/* ---------- Modal ---------- */
+
+dialog.modal {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(92vw, 480px);
+  max-height: 92vh;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 16px;
+  background: var(--bg-1);
+  color: var(--text);
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  animation: modal-pop 0.3s var(--ease-out);
+}
+
+dialog.modal::backdrop {
+  background: rgba(8, 8, 14, 0.7);
+  backdrop-filter: blur(6px);
+  animation: modal-fade 0.3s var(--ease-out);
+}
+
+@keyframes modal-pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes modal-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 22px 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.modal__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.modal__close {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.2s var(--ease-out), background 0.2s var(--ease-out),
+    border-color 0.2s var(--ease-out);
+}
+
+.modal__close:hover {
+  color: var(--text);
+  background: var(--surface);
+  border-color: var(--line);
+}
+
+.modal__close svg {
+  width: 18px;
+  height: 18px;
+}
+
+.modal__body {
+  padding: 20px 22px;
+  overflow-y: auto;
+}
+
+.modal__foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 22px 20px;
+  border-top: 1px solid var(--line);
+  margin-top: 4px;
+}
+
+.modal__error {
+  margin-bottom: 16px;
+}
+
+.field__hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+.field__error {
+  font-size: 12.5px;
+  color: #fda4b1;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
 /* ---------- Data table ---------- */
 
 .table {
@@ -460,6 +645,12 @@
   display: inline-flex;
   gap: 6px;
   flex-wrap: wrap;
+}
+
+.table__cell--actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
 }
 
 /* ---------- Skeleton rows ---------- */
