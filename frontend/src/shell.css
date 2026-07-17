@@ -235,9 +235,9 @@
 }
 
 .badge--pendiente {
-  color: #fcd34d;
-  background: rgba(245, 158, 11, 0.12);
-  border: 1px solid rgba(245, 158, 11, 0.24);
+  color: #fde68a;
+  background: rgba(245, 158, 11, 0.18);
+  border: 1px solid rgba(245, 158, 11, 0.32);
 }
 
 .badge--en_curso {
@@ -606,6 +606,18 @@ dialog.modal::backdrop {
   border-radius: 14px;
   overflow: hidden;
   background: var(--surface);
+  animation: table-enter 0.35s var(--ease-out) both;
+}
+
+@keyframes table-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .table__head {

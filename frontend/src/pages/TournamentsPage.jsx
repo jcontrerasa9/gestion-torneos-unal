@@ -204,7 +204,7 @@ export default function TournamentsPage() {
   }
 
   return (
-    <>
+    <div aria-busy={status === 'loading'}>
       <header className="page__head">
         <div className="page__title-block">
           <h1 className="page__title">Torneos</h1>
@@ -282,6 +282,6 @@ export default function TournamentsPage() {
         onConfirm={confirmDelete}
         onClose={() => setConfirmOpen(false)}
       />
-    </>
+    </div>
   )
 }
