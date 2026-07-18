@@ -19,7 +19,9 @@ return new class extends Migration
             $table->unsignedTinyInteger('jersey_number')->nullable();
             $table->string('position')->nullable();
             $table->date('joined_at');
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
+            $table->softDeletes();
 
             $table->unique(['tournament_id', 'player_id']);
             $table->unique(['tournament_team_id', 'player_id']);

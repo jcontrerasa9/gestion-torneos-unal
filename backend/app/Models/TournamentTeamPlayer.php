@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TournamentTeamPlayer extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'tournament_id',
@@ -16,10 +17,16 @@ class TournamentTeamPlayer extends Model
         'jersey_number',
         'position',
         'joined_at',
+        'is_active',
+    ];
+
+    protected $attributes = [
+        'is_active' => true,
     ];
 
     protected $casts = [
         'joined_at' => 'date',
+        'is_active' => 'boolean',
     ];
 
     public function tournament()
