@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Enrollment\PlayerRequestController;
 use App\Http\Controllers\Enrollment\TournamentTeamController;
+use App\Http\Controllers\Enrollment\TournamentTeamPlayerController;
+use App\Http\Controllers\Match\MatchEventController;
 use App\Http\Controllers\Match\TournamentMatchController;
 use App\Http\Controllers\Team\TeamController;
 use App\Http\Controllers\Tournament\TournamentController;
@@ -43,6 +45,22 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/player-requests/{playerRequest}', [PlayerRequestController::class, 'destroy'])->name('player-requests.destroy');
     });
 
+    Route::middleware('role:admin,captain')->group(function () {
+        Route::patch('/player-requests/{playerRequest}/approve', [PlayerRequestController::class, 'approve'])->name('player-requests.approve');
+        Route::patch('/player-requests/{playerRequest}/reject', [PlayerRequestController::class, 'reject'])->name('player-requests.reject');
+    });
+
+    // Tournament Team Players
+    Route::apiResource('tournament-team-players', TournamentTeamPlayerController::class)->only(['index', 'show']);
+
+    Route::middleware('role:admin,captain')->group(function () {
+        Route::patch('/tournament-team-players/{enrollment}/toggle-status', [TournamentTeamPlayerController::class, 'toggleStatus'])->name('tournament-team-players.toggle-status');
+    });
+
+    Route::middleware('role:admin')->group(function () {
+        Route::delete('/tournament-team-players/{enrollment}', [TournamentTeamPlayerController::class, 'destroy'])->name('tournament-team-players.destroy');
+    });
+
     // Tournament Team requests
     Route::middleware('role:admin,captain')->group(function () {
         Route::get('/tournament-teams', [TournamentTeamController::class, 'index'])->name('tournament-teams.index');
@@ -72,5 +90,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::middleware('role:referee')->group(function () {
         Route::patch('/tournament-matches/{match}/results', [TournamentMatchController::class, 'updateResults'])->name('tournament-matches.results');
+    });
+
+    // Match Events
+    Route::apiResource('match-events', MatchEventController::class)->only(['index', 'show']);
+
+    Route::middleware('role:admin,referee')->group(function () {
+        Route::post('/match-events', [MatchEventController::class, 'store'])->name('match-events.store');
+        Route::put('/match-events/{event}', [MatchEventController::class, 'update'])->name('match-events.update');
+        Route::delete('/match-events/{event}', [MatchEventController::class, 'destroy'])->name('match-events.destroy');
     });
 });
