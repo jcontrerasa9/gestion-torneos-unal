@@ -17,6 +17,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
 
     Route::get('/referees', [UserController::class, 'referees'])->middleware('role:admin');
+    Route::get('/captains', [UserController::class, 'captains'])->middleware('role:admin');
 
     // Teams
     Route::apiResource('teams', TeamController::class)->only(['index', 'show']);

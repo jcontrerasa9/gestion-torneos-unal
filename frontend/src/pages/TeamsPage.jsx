@@ -2,7 +2,8 @@ import { useCallback, useEffect, useState } from 'react'
 import * as teamsApi from '../api/teams'
 import { useAuth } from '../context/useAuth'
 import Pagination from '../components/ui/Pagination'
-import { AlertIcon, ShieldIcon } from '../components/icons'
+import { AlertIcon, EditIcon, PlusIcon, ShieldIcon } from '../components/icons'
+import TeamFormModal from '../components/teams/TeamFormModal'
 
 function TeamsTable({ items, canManage, onEdit }) {
   const cols = canManage
@@ -38,10 +39,7 @@ function TeamsTable({ items, canManage, onEdit }) {
                 aria-label={`Editar ${t.name}`}
                 title="Editar"
               >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
-                  <path d="M12 20h9" />
-                  <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" />
-                </svg>
+                <EditIcon />
               </button>
             </div>
           )}
@@ -94,6 +92,9 @@ export default function TeamsPage() {
   const [status, setStatus] = useState('loading')
   const [error, setError] = useState(null)
 
+  const [modalOpen, setModalOpen] = useState(false)
+  const [active, setActive] = useState(null)
+
   const load = useCallback(async (targetPage) => {
     setStatus('loading')
     setError(null)
@@ -118,54 +119,85 @@ export default function TeamsPage() {
     setPage(next)
   }
 
-  function handleEdit() {}
+  function openCreate() {
+    setActive(null)
+    setModalOpen(true)
+  }
+
+  function openEdit(team) {
+    setActive(team)
+    setModalOpen(true)
+  }
+
+  function handleSaved() {
+    load(page)
+  }
 
   return (
-    <div aria-busy={status === 'loading'}>
-      <header className="page__head">
-        <div className="page__title-block">
-          <h1 className="page__title">Equipos</h1>
-          <p className="page__subtitle">
-            Administra los equipos inscritos en los torneos de la UNAL La Nubia.
-          </p>
-        </div>
-      </header>
+    <>
+      <div aria-busy={status === 'loading'}>
+        <header className="page__head">
+          <div className="page__title-block">
+            <h1 className="page__title">Equipos</h1>
+            <p className="page__subtitle">
+              Administra los equipos inscritos en los torneos de la UNAL La Nubia.
+            </p>
+          </div>
+          {canManage && (
+            <div className="page__actions">
+              <button type="button" className="btn btn--primary btn--sm" onClick={openCreate}>
+                <span className="btn__content">
+                  <PlusIcon />
+                  Nuevo equipo
+                </span>
+              </button>
+            </div>
+          )}
+        </header>
 
-      {error && (
-        <div className="error-banner" role="alert">
-          <AlertIcon />
-          {error}
-          <button
-            type="button"
-            className="auth__switch"
-            onClick={() => load(page)}
-            style={{ marginLeft: 'auto' }}
-          >
-            Reintentar
-          </button>
-        </div>
-      )}
+        {error && (
+          <div className="error-banner" role="alert">
+            <AlertIcon />
+            {error}
+            <button
+              type="button"
+              className="auth__switch"
+              onClick={() => load(page)}
+              style={{ marginLeft: 'auto' }}
+            >
+              Reintentar
+            </button>
+          </div>
+        )}
 
-      {status === 'loading' && <TeamsSkeleton />}
+        {status === 'loading' && <TeamsSkeleton />}
 
-      {status === 'ready' && items.length === 0 && (
-        <EmptyState canManage={canManage} />
-      )}
+        {status === 'ready' && items.length === 0 && (
+          <EmptyState canManage={canManage} />
+        )}
 
-      {status === 'ready' && items.length > 0 && (
-        <>
-          <TeamsTable
-            items={items}
-            canManage={false}
-            onEdit={handleEdit}
-          />
-          <Pagination
-            page={page}
-            lastPage={lastPage}
-            onChange={handleChangePage}
-          />
-        </>
-      )}
-    </div>
+        {status === 'ready' && items.length > 0 && (
+          <>
+            <TeamsTable
+              items={items}
+              canManage={canManage}
+              onEdit={openEdit}
+            />
+            <Pagination
+              page={page}
+              lastPage={lastPage}
+              onChange={handleChangePage}
+            />
+          </>
+        )}
+      </div>
+
+      <TeamFormModal
+        open={modalOpen}
+        team={active}
+        onClose={() => setModalOpen(false)}
+        onSaved={handleSaved}
+      />
+    </>
   )
 }
