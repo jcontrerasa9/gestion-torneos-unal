@@ -486,6 +486,8 @@ dialog.modal {
   background: var(--bg-1);
   color: var(--text);
   box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   animation: modal-pop 0.3s var(--ease-out);
 }
@@ -522,6 +524,7 @@ dialog.modal::backdrop {
   justify-content: space-between;
   padding: 20px 22px 14px;
   border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
 }
 
 .modal__title {
@@ -558,6 +561,8 @@ dialog.modal::backdrop {
 
 .modal__body {
   padding: 20px 22px;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
 }
 
@@ -569,6 +574,7 @@ dialog.modal::backdrop {
   padding: 16px 22px 20px;
   border-top: 1px solid var(--line);
   margin-top: 4px;
+  flex-shrink: 0;
 }
 
 .modal__error {
