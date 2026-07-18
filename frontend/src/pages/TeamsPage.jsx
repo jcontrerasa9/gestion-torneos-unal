@@ -2,10 +2,11 @@ import { useCallback, useEffect, useState } from 'react'
 import * as teamsApi from '../api/teams'
 import { useAuth } from '../context/useAuth'
 import Pagination from '../components/ui/Pagination'
-import { AlertIcon, EditIcon, PlusIcon, ShieldIcon } from '../components/icons'
+import { AlertIcon, EditIcon, PlusIcon, ShieldIcon, TrashIcon } from '../components/icons'
 import TeamFormModal from '../components/teams/TeamFormModal'
+import ConfirmDialog from '../components/ui/ConfirmDialog'
 
-function TeamsTable({ items, canManage, onEdit }) {
+function TeamsTable({ items, canManage, onEdit, onDelete }) {
   const cols = canManage
     ? 'minmax(0, 1fr) minmax(0, 0.8fr) auto'
     : 'minmax(0, 1fr) minmax(0, 0.8fr)'
@@ -40,6 +41,15 @@ function TeamsTable({ items, canManage, onEdit }) {
                 title="Editar"
               >
                 <EditIcon />
+              </button>
+              <button
+                type="button"
+                className="icon-btn is-danger"
+                onClick={() => onDelete(t)}
+                aria-label={`Eliminar ${t.name}`}
+                title="Eliminar"
+              >
+                <TrashIcon />
               </button>
             </div>
           )}
@@ -94,6 +104,10 @@ export default function TeamsPage() {
 
   const [modalOpen, setModalOpen] = useState(false)
   const [active, setActive] = useState(null)
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [deleting, setDeleting] = useState(null)
+  const [deleteBusy, setDeleteBusy] = useState(false)
+  const [deleteError, setDeleteError] = useState(null)
 
   const load = useCallback(async (targetPage) => {
     setStatus('loading')
@@ -131,6 +145,27 @@ export default function TeamsPage() {
 
   function handleSaved() {
     load(page)
+  }
+
+  function openDelete(team) {
+    setDeleting(team)
+    setDeleteError(null)
+    setConfirmOpen(true)
+  }
+
+  async function confirmDelete() {
+    setDeleteBusy(true)
+    setDeleteError(null)
+    try {
+      await teamsApi.remove(deleting.id)
+      setConfirmOpen(false)
+      setDeleting(null)
+      load(page)
+    } catch (err) {
+      setDeleteError(err.message)
+    } finally {
+      setDeleteBusy(false)
+    }
   }
 
   return (
@@ -182,6 +217,7 @@ export default function TeamsPage() {
               items={items}
               canManage={canManage}
               onEdit={openEdit}
+              onDelete={openDelete}
             />
             <Pagination
               page={page}
@@ -197,6 +233,21 @@ export default function TeamsPage() {
         team={active}
         onClose={() => setModalOpen(false)}
         onSaved={handleSaved}
+      />
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Eliminar equipo"
+        message={
+          deleting
+            ? `¿Seguro que quieres eliminar «${deleting.name}»? Esta acción no se puede deshacer.`
+            : ''
+        }
+        confirmLabel="Eliminar equipo"
+        error={deleteError}
+        busy={deleteBusy}
+        onConfirm={confirmDelete}
+        onClose={() => setConfirmOpen(false)}
       />
     </>
   )
