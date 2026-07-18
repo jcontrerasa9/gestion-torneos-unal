@@ -2,64 +2,59 @@
 
 namespace App\Http\Controllers\Match;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\MatchEvent\DeleteMatchEventRequest;
+use App\Http\Requests\MatchEvent\StoreMatchEventRequest;
+use App\Http\Requests\MatchEvent\UpdateMatchEventRequest;
 use App\Models\MatchEvent;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class MatchEventController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        $events = MatchEvent::with(['match.tournament', 'player'])
+            ->latest()
+            ->paginate(15);
+
+        return response()->json([
+            'message' => 'Match events retrieved successfully',
+            'data' => $events,
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(StoreMatchEventRequest $request): JsonResponse
     {
-        //
+        $event = MatchEvent::create($request->validated());
+
+        return response()->json([
+            'message' => 'Match event created successfully',
+            'data' => $event->load(['match.tournament', 'player']),
+        ], 201);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function show(MatchEvent $matchEvent): JsonResponse
     {
-        //
+        return response()->json([
+            'message' => 'Match event retrieved successfully',
+            'data' => $matchEvent->load(['match.tournament', 'player']),
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(MatchEvent $matchEvent)
+    public function update(UpdateMatchEventRequest $request, MatchEvent $matchEvent): JsonResponse
     {
-        //
+        $matchEvent->update($request->validated());
+
+        return response()->json([
+            'message' => 'Match event updated successfully',
+            'data' => $matchEvent->fresh(['match.tournament', 'player']),
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(MatchEvent $matchEvent)
+    public function destroy(DeleteMatchEventRequest $request, MatchEvent $matchEvent): JsonResponse
     {
-        //
-    }
+        $matchEvent->delete();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, MatchEvent $matchEvent)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(MatchEvent $matchEvent)
-    {
-        //
+        return response()->json(['message' => 'Match event deleted successfully']);
     }
 }
