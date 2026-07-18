@@ -4,6 +4,7 @@ import ballMark from '../assets/ball.svg'
 import { filterNavForRole } from '../nav'
 import { LogoutIcon } from './icons'
 import TournamentsPage from '../pages/TournamentsPage'
+import TeamsPage from '../pages/TeamsPage'
 import MatchesPage from '../pages/MatchesPage'
 
 export default function AppShell() {
@@ -75,6 +76,7 @@ export default function AppShell() {
 
       <main className="shell__main">
         {view === 'tournaments' && <TournamentsPage />}
+        {view === 'teams' && <TeamsPage />}
         {view === 'matches' && <MatchesPage />}
       </main>
     </div>
