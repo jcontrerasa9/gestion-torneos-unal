@@ -6,9 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Team\DeleteTeamRequest;
 use App\Http\Requests\Team\StoreTeamRequest;
 use App\Http\Requests\Team\UpdateTeamRequest;
-use App\Models\Role;
 use App\Models\Team;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
 class TeamController extends Controller
@@ -33,16 +31,6 @@ class TeamController extends Controller
 
         $team = Team::create($data);
 
-        if ($request->user()->role->name === 'admin' && ! empty($data['captain_id'])) {
-            $captain = User::find($data['captain_id']);
-            if ($captain && $captain->role->name !== 'captain') {
-                $captainRole = Role::where('name', 'captain')->first();
-                if ($captainRole) {
-                    $captain->update(['role_id' => $captainRole->id]);
-                }
-            }
-        }
-
         return response()->json([
             'message' => 'Team created successfully',
             'data' => $team->load('captain'),
@@ -59,18 +47,7 @@ class TeamController extends Controller
 
     public function update(UpdateTeamRequest $request, Team $team): JsonResponse
     {
-        $data = $request->validated();
-        $team->update($data);
-
-        if ($request->user()->role->name === 'admin' && ! empty($data['captain_id'])) {
-            $captain = User::find($data['captain_id']);
-            if ($captain && $captain->role->name !== 'captain') {
-                $captainRole = Role::where('name', 'captain')->first();
-                if ($captainRole) {
-                    $captain->update(['role_id' => $captainRole->id]);
-                }
-            }
-        }
+        $team->update($request->validated());
 
         return response()->json([
             'message' => 'Team updated successfully',

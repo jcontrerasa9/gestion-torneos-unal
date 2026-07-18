@@ -28,6 +28,13 @@ class StoreTeamRequest extends FormRequest
                 'nullable',
                 'integer',
                 Rule::exists('users', 'id'),
+                function (string $attribute, mixed $value, Closure $fail): void {
+                    $user = User::find($value);
+
+                    if ($user && $user->role->name !== 'captain') {
+                        $fail('El usuario seleccionado debe tener rol de capitán.');
+                    }
+                },
             ];
         }
 

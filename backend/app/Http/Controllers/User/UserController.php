@@ -24,7 +24,10 @@ class UserController extends Controller
 
     public function captains(): JsonResponse
     {
-        $users = User::where('active', true)
+        $captainRole = Role::where('name', 'captain')->firstOrFail();
+
+        $users = User::where('role_id', $captainRole->id)
+            ->where('active', true)
             ->select('id', 'first_name', 'last_name')
             ->orderBy('last_name')
             ->get();

@@ -137,8 +137,8 @@ export default function TeamFormModal({ open, team, onClose, onSaved }) {
             value={form.captain_id}
             onChange={update('captain_id')}
             options={captainOpts}
-            placeholder="Selecciona un usuario como capitán"
-            hint="Puedes elegir cualquier usuario activo. Si no tiene rol de capitán, se le asignará automáticamente."
+            placeholder="Selecciona un capitán"
+            hint="Solo aparecen usuarios con rol de capitán"
             error={errors.captain_id?.[0]}
           />
         )}
