@@ -558,6 +558,7 @@ dialog.modal::backdrop {
 
 .modal__body {
   padding: 20px 22px;
+  max-height: calc(92vh - 140px);
   overflow-y: auto;
 }
 
