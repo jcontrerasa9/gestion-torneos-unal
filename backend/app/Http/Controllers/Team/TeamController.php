@@ -13,7 +13,7 @@ class TeamController extends Controller
 {
     public function index(): JsonResponse
     {
-        $teams = Team::latest()->paginate(15);
+        $teams = Team::with('captain')->latest()->paginate(15);
 
         return response()->json([
             'message' => 'Teams retrieved successfully',
