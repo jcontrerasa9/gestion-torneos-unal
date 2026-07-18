@@ -2,8 +2,7 @@
 
 namespace App\Http\Requests\Team;
 
-use App\Models\User;
-use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -15,7 +14,7 @@ class StoreTeamRequest extends FormRequest
     }
 
     /**
-     * @return array<string, array<int, \Illuminate\Contracts\Validation\ValidationRule|string>>
+     * @return array<string, array<int, ValidationRule|string>>
      */
     public function rules(): array
     {
@@ -29,13 +28,6 @@ class StoreTeamRequest extends FormRequest
                 'nullable',
                 'integer',
                 Rule::exists('users', 'id'),
-                function (string $attribute, mixed $value, Closure $fail): void {
-                    $user = User::find($value);
-
-                    if ($user && $user->role->name !== 'captain') {
-                        $fail('The selected user must have the captain role.');
-                    }
-                },
             ];
         }
 

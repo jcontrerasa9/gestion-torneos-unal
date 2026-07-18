@@ -132,13 +132,13 @@ export default function TeamFormModal({ open, team, onClose, onSaved }) {
 
         {isAdmin && (
           <SelectField
-            label="Capitán"
+            label="Capitán del equipo"
             name="captain_id"
             value={form.captain_id}
             onChange={update('captain_id')}
             options={captainOpts}
-            placeholder="Selecciona un capitán"
-            hint="Asigna el responsable del equipo"
+            placeholder="Selecciona un usuario como capitán"
+            hint="Puedes elegir cualquier usuario activo. Si no tiene rol de capitán, se le asignará automáticamente."
             error={errors.captain_id?.[0]}
           />
         )}

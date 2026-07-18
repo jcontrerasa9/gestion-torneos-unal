@@ -6,14 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Team\DeleteTeamRequest;
 use App\Http\Requests\Team\StoreTeamRequest;
 use App\Http\Requests\Team\UpdateTeamRequest;
+use App\Models\Role;
 use App\Models\Team;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
 class TeamController extends Controller
 {
     public function index(): JsonResponse
     {
-        $teams = Team::latest()->paginate(15);
+        $teams = Team::with('captain')->latest()->paginate(15);
 
         return response()->json([
             'message' => 'Teams retrieved successfully',
@@ -30,6 +32,16 @@ class TeamController extends Controller
         }
 
         $team = Team::create($data);
+
+        if ($request->user()->role->name === 'admin' && ! empty($data['captain_id'])) {
+            $captain = User::find($data['captain_id']);
+            if ($captain && $captain->role->name !== 'captain') {
+                $captainRole = Role::where('name', 'captain')->first();
+                if ($captainRole) {
+                    $captain->update(['role_id' => $captainRole->id]);
+                }
+            }
+        }
 
         return response()->json([
             'message' => 'Team created successfully',
