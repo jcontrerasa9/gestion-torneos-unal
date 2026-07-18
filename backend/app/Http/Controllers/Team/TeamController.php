@@ -59,7 +59,18 @@ class TeamController extends Controller
 
     public function update(UpdateTeamRequest $request, Team $team): JsonResponse
     {
-        $team->update($request->validated());
+        $data = $request->validated();
+        $team->update($data);
+
+        if ($request->user()->role->name === 'admin' && ! empty($data['captain_id'])) {
+            $captain = User::find($data['captain_id']);
+            if ($captain && $captain->role->name !== 'captain') {
+                $captainRole = Role::where('name', 'captain')->first();
+                if ($captainRole) {
+                    $captain->update(['role_id' => $captainRole->id]);
+                }
+            }
+        }
 
         return response()->json([
             'message' => 'Team updated successfully',
