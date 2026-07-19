@@ -3,7 +3,8 @@ import * as enrollmentApi from '../api/tournament-teams'
 import { useAuth } from '../context/useAuth'
 import Badge from '../components/ui/Badge'
 import Pagination from '../components/ui/Pagination'
-import { AlertIcon, CheckIcon } from '../components/icons'
+import { AlertIcon, CheckIcon, PlusIcon } from '../components/icons'
+import EnrollmentFormModal from '../components/enrollment/EnrollmentFormModal'
 
 const STATUS_LABEL = {
   pendiente: 'Pendiente',
@@ -100,6 +101,8 @@ export default function EnrollmentPage() {
   const [status, setStatus] = useState('loading')
   const [error, setError] = useState(null)
 
+  const [modalOpen, setModalOpen] = useState(false)
+
   const load = useCallback(async (targetPage) => {
     setStatus('loading')
     setError(null)
@@ -124,7 +127,16 @@ export default function EnrollmentPage() {
     setPage(next)
   }
 
+  function openCreate() {
+    setModalOpen(true)
+  }
+
+  function handleSaved() {
+    load(page)
+  }
+
   return (
+    <>
     <div aria-busy={status === 'loading'}>
       <header className="page__head">
         <div className="page__title-block">
@@ -133,6 +145,16 @@ export default function EnrollmentPage() {
             Inscribe equipos en los torneos y gestiona las solicitudes de participación.
           </p>
         </div>
+      {canManage && (
+          <div className="page__actions">
+            <button type="button" className="btn btn--primary btn--sm" onClick={openCreate}>
+              <span className="btn__content">
+                <PlusIcon />
+                Nueva inscripción
+              </span>
+            </button>
+          </div>
+        )}
       </header>
 
       {error && (
@@ -165,5 +187,12 @@ export default function EnrollmentPage() {
         </>
       )}
     </div>
+
+      <EnrollmentFormModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSaved={handleSaved}
+      />
+    </>
   )
 }
