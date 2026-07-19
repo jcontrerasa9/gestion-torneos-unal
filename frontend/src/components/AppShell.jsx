@@ -6,6 +6,7 @@ import { LogoutIcon } from './icons'
 import TournamentsPage from '../pages/TournamentsPage'
 import TeamsPage from '../pages/TeamsPage'
 import MatchesPage from '../pages/MatchesPage'
+import EnrollmentPage from '../pages/EnrollmentPage'
 
 export default function AppShell() {
   const { user, logout } = useAuth()
@@ -78,6 +79,7 @@ export default function AppShell() {
         {view === 'tournaments' && <TournamentsPage />}
         {view === 'teams' && <TeamsPage />}
         {view === 'matches' && <MatchesPage />}
+        {view === 'enrollment' && <EnrollmentPage />}
       </main>
     </div>
   )
