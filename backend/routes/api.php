@@ -12,6 +12,8 @@ use App\Http\Controllers\Team\TeamController;
 use App\Http\Controllers\Tournament\TournamentController;
 use App\Http\Controllers\User\AuthController;
 use App\Http\Controllers\User\UserController;
+use App\Models\Tournament;
+use App\Models\TournamentTeamPlayer;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -96,6 +98,18 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::middleware('role:referee')->group(function () {
         Route::patch('/tournament-matches/{match}/results', [TournamentMatchController::class, 'updateResults'])->name('tournament-matches.results');
+    });
+
+    Route::middleware('role:admin,referee')->group(function () {
+        Route::get('/tournaments/{tournament}/players', function (Tournament $tournament) {
+            return response()->json([
+                'data' => TournamentTeamPlayer::where('tournament_id', $tournament->id)
+                    ->with('player')
+                    ->get()
+                    ->unique('player_id')
+                    ->values(),
+            ]);
+        });
     });
 
     // Match Events

@@ -9,6 +9,7 @@ import MatchesPage from '../pages/MatchesPage'
 import EnrollmentPage from '../pages/EnrollmentPage'
 import PlayerRequestsPage from '../pages/PlayerRequestsPage'
 import StandingsPage from '../pages/StandingsPage'
+import MatchEventsPage from '../pages/MatchEventsPage'
 
 export default function AppShell() {
   const { user, logout } = useAuth()
@@ -82,6 +83,7 @@ export default function AppShell() {
         {view === 'teams' && <TeamsPage />}
         {view === 'matches' && <MatchesPage />}
         {view === 'standings' && <StandingsPage />}
+        {view === 'match-events' && <MatchEventsPage />}
         {view === 'enrollment' && <EnrollmentPage />}
         {view === 'player-requests' && <PlayerRequestsPage />}
       </main>
