@@ -1,10 +1,11 @@
-import { CalendarIcon, CheckIcon, ShieldIcon, TrophyIcon } from './components/icons'
+import { CalendarIcon, CheckIcon, ShieldIcon, TrophyIcon, UserIcon } from './components/icons'
 
 export const navItems = [
   { key: 'tournaments', label: 'Torneos', icon: TrophyIcon, roles: ['admin', 'captain', 'player', 'referee', 'student'] },
   { key: 'teams', label: 'Equipos', icon: ShieldIcon, roles: ['admin', 'captain', 'player', 'referee', 'student'] },
   { key: 'matches', label: 'Partidos', icon: CalendarIcon, roles: ['admin', 'captain', 'player', 'referee', 'student'] },
   { key: 'enrollment', label: 'Inscripciones', icon: CheckIcon, roles: ['admin', 'captain'] },
+  { key: 'player-requests', label: 'Solicitudes', icon: UserIcon, roles: ['admin', 'captain', 'player'] },
 ]
 
 export function filterNavForRole(roleName) {
