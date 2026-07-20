@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Team;
 
+use App\Models\User;
+use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
