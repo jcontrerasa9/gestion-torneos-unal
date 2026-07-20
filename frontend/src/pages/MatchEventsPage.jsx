@@ -148,20 +148,27 @@ function EventFormModal({ open, event, onClose, onSaved }) {
     setForm(buildInitial(event))
     setErrors({})
     setGlobalError(null)
+    setPlayers([])
     api.get('/tournament-matches?page=1').then((r) => setMatches(r.data.data || [])).catch(() => {})
   }, [open, event])
 
-  useEffect(() => {
-    if (!form.match_id) { setPlayers([]); return }
-    api.get(`/tournament-matches/${form.match_id}`).then((r) => {
-      const match = r.data
-      api.get(`/tournaments/${match.tournament_id}/players`).then((res) => {
-        setPlayers(res.data || [])
-      }).catch(() => setPlayers([]))
-    }).catch(() => setPlayers([]))
-  }, [form.match_id])
-
-  function update(f) { return (e) => setForm((p) => ({ ...p, [f]: e.target.value })) }
+  function update(f) {
+    return (e) => {
+      const val = e.target.value
+      setForm((p) => ({ ...p, [f]: val }))
+      if (f === 'match_id' && val) {
+        setPlayers([])
+        api.get(`/tournament-matches/${val}`).then((r) => {
+          api.get(`/tournaments/${r.data.tournament_id}/players`).then((res) => {
+            setPlayers(res.data || [])
+          }).catch(() => setPlayers([]))
+        }).catch(() => setPlayers([]))
+      }
+      if (f === 'match_id' && !val) {
+        setPlayers([])
+      }
+    }
+  }
 
   async function handleSubmit(e) {
     e.preventDefault()
