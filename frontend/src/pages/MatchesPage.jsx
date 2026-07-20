@@ -18,8 +18,8 @@ const STATUS_LABEL = matchLabels
 
 function MatchesTable({ items, canManage, onEdit, onDelete }) {
   const cols = canManage
-    ? 'minmax(0, 1.1fr) minmax(0, 1.5fr) auto auto auto'
-    : 'minmax(0, 1.1fr) minmax(0, 1.5fr) auto auto'
+    ? 'minmax(0, 1.1fr) minmax(0, 1.5fr) minmax(80px, 0.7fr) minmax(70px, 0.6fr) auto'
+    : 'minmax(0, 1.1fr) minmax(0, 1.5fr) minmax(80px, 0.7fr) minmax(70px, 0.6fr)'
 
   return (
     <div className="table" role="table" aria-label="Partidos">
@@ -45,14 +45,14 @@ function MatchesTable({ items, canManage, onEdit, onDelete }) {
           </div>
 
           <div className="table__cell" role="cell">
-            <div className="table__stack">
-              <span style={{ fontWeight: 600 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
+              <span style={{ fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {m.home_team?.name ?? 'Local'}
               </span>
-              <span style={{ color: 'var(--text-muted)', fontSize: 13 }}>
+              <span style={{ color: 'var(--text-dim)', fontSize: 13, flexShrink: 0 }}>
                 vs
               </span>
-              <span style={{ fontWeight: 600 }}>
+              <span style={{ fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {m.away_team?.name ?? 'Visitante'}
               </span>
             </div>
@@ -107,16 +107,18 @@ function MatchesTable({ items, canManage, onEdit, onDelete }) {
 }
 
 function MatchesSkeleton() {
+  const cols = 'minmax(0, 1.1fr) minmax(0, 1.5fr) minmax(80px, 0.7fr) minmax(70px, 0.6fr)'
+
   return (
     <div className="table" aria-hidden="true">
-      <div className="table__head">
+      <div className="table__head" style={{ gridTemplateColumns: cols }}>
         <div>Torneo · Fecha</div>
         <div>Partido</div>
         <div>Estado</div>
         <div>Resultado</div>
       </div>
       {Array.from({ length: 5 }).map((_, i) => (
-        <div key={i} className="skeleton-row">
+        <div key={i} className="skeleton-row" style={{ gridTemplateColumns: cols }}>
           <span className="skeleton skeleton--md" />
           <span className="skeleton skeleton--md" />
           <span className="skeleton skeleton--sm" />

@@ -60,14 +60,16 @@ function TeamsTable({ items, canManage, onEdit, onDelete }) {
 }
 
 function TeamsSkeleton() {
+  const cols = 'minmax(0, 1fr) minmax(0, 0.8fr)'
+
   return (
     <div className="table" aria-hidden="true">
-      <div className="table__head">
+      <div className="table__head" style={{ gridTemplateColumns: cols }}>
         <div>Nombre</div>
         <div>Capitán</div>
       </div>
       {Array.from({ length: 5 }).map((_, i) => (
-        <div key={i} className="skeleton-row">
+        <div key={i} className="skeleton-row" style={{ gridTemplateColumns: cols }}>
           <span className="skeleton skeleton--md" />
           <span className="skeleton skeleton--md" />
         </div>

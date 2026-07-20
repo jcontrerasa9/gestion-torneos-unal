@@ -15,8 +15,8 @@ const STATUS_LABEL = {
 
 function RequestsTable({ items, canManage, onApprove, onReject, onDelete }) {
   const cols = canManage
-    ? 'minmax(0, 0.8fr) minmax(0, 1fr) auto auto auto auto auto'
-    : 'minmax(0, 0.8fr) minmax(0, 1fr) auto auto auto auto'
+    ? 'minmax(0, 0.8fr) minmax(0, 1fr) minmax(50px, 0.4fr) minmax(80px, 0.5fr) minmax(80px, 0.5fr) minmax(90px, 0.6fr) auto'
+    : 'minmax(0, 0.8fr) minmax(0, 1fr) minmax(50px, 0.4fr) minmax(80px, 0.5fr) minmax(80px, 0.5fr) minmax(90px, 0.6fr)'
 
   return (
     <div className="table" role="table" aria-label="Solicitudes">
@@ -113,9 +113,11 @@ function RequestsTable({ items, canManage, onApprove, onReject, onDelete }) {
 }
 
 function RequestsSkeleton() {
+  const cols = 'minmax(0, 0.8fr) minmax(0, 1fr) minmax(50px, 0.4fr) minmax(80px, 0.5fr) minmax(80px, 0.5fr) minmax(90px, 0.6fr)'
+
   return (
     <div className="table" aria-hidden="true">
-      <div className="table__head">
+      <div className="table__head" style={{ gridTemplateColumns: cols }}>
         <div>Jugador</div>
         <div>Equipo · Torneo</div>
         <div>Dorsal</div>
@@ -124,7 +126,7 @@ function RequestsSkeleton() {
         <div>Solicitud</div>
       </div>
       {Array.from({ length: 5 }).map((_, i) => (
-        <div key={i} className="skeleton-row">
+        <div key={i} className="skeleton-row" style={{ gridTemplateColumns: cols }}>
           <span className="skeleton skeleton--md" />
           <span className="skeleton skeleton--md" />
           <span className="skeleton skeleton--sm" />

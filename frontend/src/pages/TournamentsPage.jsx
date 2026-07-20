@@ -24,8 +24,8 @@ function TournamentsTable({
   onDelete,
 }) {
   const cols = canManage
-    ? 'minmax(180px, 1.6fr) auto auto minmax(180px, 1.2fr) auto'
-    : 'minmax(180px, 1.6fr) auto auto minmax(180px, 1.2fr)'
+    ? 'minmax(180px, 1.6fr) minmax(90px, 0.6fr) minmax(80px, 0.6fr) minmax(180px, 1.2fr) auto'
+    : 'minmax(180px, 1.6fr) minmax(90px, 0.6fr) minmax(80px, 0.6fr) minmax(180px, 1.2fr)'
 
   return (
     <div className="table" role="table" aria-label="Torneos">
@@ -91,16 +91,18 @@ function TournamentsTable({
 }
 
 function TournamentsSkeleton() {
+  const cols = 'minmax(180px, 1.6fr) minmax(90px, 0.6fr) minmax(80px, 0.6fr) minmax(180px, 1.2fr)'
+
   return (
     <div className="table" aria-hidden="true">
-      <div className="table__head">
+      <div className="table__head" style={{ gridTemplateColumns: cols }}>
         <div>Nombre</div>
         <div>Modalidad</div>
         <div>Estado</div>
         <div>Fechas</div>
       </div>
       {Array.from({ length: 5 }).map((_, i) => (
-        <div key={i} className="skeleton-row">
+        <div key={i} className="skeleton-row" style={{ gridTemplateColumns: cols }}>
           <span className="skeleton skeleton--md" />
           <span className="skeleton skeleton--sm" />
           <span className="skeleton skeleton--sm" />
