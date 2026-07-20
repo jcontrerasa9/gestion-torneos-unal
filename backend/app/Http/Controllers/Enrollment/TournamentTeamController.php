@@ -14,7 +14,16 @@ class TournamentTeamController extends Controller
 {
     public function index(): JsonResponse
     {
-        $requests = TournamentTeam::with(['tournament', 'team'])->latest()->paginate(15);
+        $user = auth()->user();
+        $query = TournamentTeam::with(['tournament', 'team']);
+
+        if ($user->role->name === 'captain') {
+            $query->whereHas('team', function ($q) use ($user): void {
+                $q->where('captain_id', $user->id);
+            });
+        }
+
+        $requests = $query->latest()->paginate(15);
 
         return response()->json([
             'message' => 'Tournament team requests retrieved successfully',
