@@ -282,6 +282,18 @@
   border: 1px solid rgba(245, 158, 11, 0.32);
 }
 
+.badge--aprobada {
+  color: #86efac;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.24);
+}
+
+.badge--rechazada {
+  color: #fda4b1;
+  background: var(--danger-bg);
+  border: 1px solid rgba(244, 63, 94, 0.22);
+}
+
 .badge--modalidad {
   color: var(--purple-light);
   background: var(--purple-soft);

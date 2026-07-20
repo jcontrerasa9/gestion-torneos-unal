@@ -14,7 +14,7 @@ class TournamentTeamController extends Controller
 {
     public function index(): JsonResponse
     {
-        $requests = TournamentTeam::latest()->paginate(15);
+        $requests = TournamentTeam::with(['tournament', 'team'])->latest()->paginate(15);
 
         return response()->json([
             'message' => 'Tournament team requests retrieved successfully',
