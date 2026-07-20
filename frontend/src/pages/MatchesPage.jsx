@@ -45,14 +45,14 @@ function MatchesTable({ items, canManage, onEdit, onDelete }) {
           </div>
 
           <div className="table__cell" role="cell">
-            <div className="table__stack">
-              <span style={{ fontWeight: 600 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
+              <span style={{ fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {m.home_team?.name ?? 'Local'}
               </span>
-              <span style={{ color: 'var(--text-muted)', fontSize: 13 }}>
+              <span style={{ color: 'var(--text-dim)', fontSize: 13, flexShrink: 0 }}>
                 vs
               </span>
-              <span style={{ fontWeight: 600 }}>
+              <span style={{ fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {m.away_team?.name ?? 'Visitante'}
               </span>
             </div>
