@@ -19,14 +19,10 @@ class AuthController extends Controller
             'email' => ['required', 'email', 'max:150', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'max:100'],
             'phone' => ['nullable', 'string', 'max:30'],
-            'role_id' => ['sometimes', 'integer', 'exists:roles,id'],
         ]);
 
-        if (! isset($data['role_id'])) {
-            $student = Role::where('name', 'student')->firstOrFail();
-            $data['role_id'] = $student->id;
-        }
-
+        $student = Role::where('name', 'student')->firstOrFail();
+        $data['role_id'] = $student->id;
         $data['active'] = true;
 
         $user = User::create($data)->load('role');
