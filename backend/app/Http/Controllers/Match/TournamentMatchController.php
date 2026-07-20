@@ -8,6 +8,7 @@ use App\Http\Requests\TournamentMatch\StoreTournamentMatchRequest;
 use App\Http\Requests\TournamentMatch\UpdateMatchResultsRequest;
 use App\Http\Requests\TournamentMatch\UpdateTournamentMatchRequest;
 use App\Models\TournamentMatch;
+use App\Services\StandingService;
 use Illuminate\Http\JsonResponse;
 
 class TournamentMatchController extends Controller
@@ -61,11 +62,18 @@ class TournamentMatchController extends Controller
 
     public function updateResults(UpdateMatchResultsRequest $request, TournamentMatch $match): JsonResponse
     {
-        $match->update($request->validated());
+        $data = $request->validated();
+        $match->update($data);
+
+        $updatedMatch = $match->fresh();
+
+        if (($data['status'] ?? $updatedMatch->status) === 'finalizado') {
+            app(StandingService::class)->updateFromMatch($updatedMatch);
+        }
 
         return response()->json([
             'message' => 'Match results updated successfully',
-            'data' => $match->fresh(['tournament', 'homeTeam', 'awayTeam', 'referee']),
+            'data' => $updatedMatch->load(['tournament', 'homeTeam', 'awayTeam', 'referee']),
         ]);
     }
 }

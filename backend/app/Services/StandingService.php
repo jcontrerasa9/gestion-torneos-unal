@@ -3,24 +3,23 @@
 namespace App\Services;
 
 use App\Models\Standing;
+use App\Models\Tournament;
 use App\Models\TournamentMatch;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
 
 class StandingService
 {
     public function updateFromMatch(TournamentMatch $match): void
     {
-        if ($match->status !== 'finished') {
+        if (!in_array($match->status, ['finished', 'finalizado'], true)) {
             return;
         }
 
-        $homeTeamId = $match->home_team_id;
-        $awayTeamId = $match->away_team_id;
+        $homeStanding = $this->findOrCreateStanding($match->tournament_id, $match->home_team_id);
+        $awayStanding = $this->findOrCreateStanding($match->tournament_id, $match->away_team_id);
+
         $homeScore = (int) $match->home_score;
         $awayScore = (int) $match->away_score;
-
-        $homeStanding = $this->findOrCreateStanding($match->tournament_id, $homeTeamId);
-        $awayStanding = $this->findOrCreateStanding($match->tournament_id, $awayTeamId);
 
         $homeStanding->matches_played += 1;
         $awayStanding->matches_played += 1;
@@ -52,12 +51,21 @@ class StandingService
         $awayStanding->save();
     }
 
-    protected function findOrCreateStanding(int $tournamentId, int $tournamentTeamId): Standing
+    public function refreshForTournament(Tournament $tournament): void
     {
+        foreach ($tournament->matches()->whereIn('status', ['finished', 'finalizado'])->get() as $match) {
+            $this->updateFromMatch($match);
+        }
+    }
+
+    protected function findOrCreateStanding(int $tournamentId, int $teamId): Standing
+    {
+        $tournamentTeam = $this->resolveTournamentTeamId($tournamentId, $teamId);
+
         return Standing::firstOrCreate(
             [
                 'tournament_id' => $tournamentId,
-                'tournament_team_id' => $tournamentTeamId,
+                'tournament_team_id' => $tournamentTeam->id,
             ],
             [
                 'matches_played' => 0,
@@ -68,6 +76,20 @@ class StandingService
                 'goals_against' => 0,
                 'goal_difference' => 0,
                 'points' => 0,
+            ]
+        );
+    }
+
+    protected function resolveTournamentTeamId(int $tournamentId, int $teamId): \App\Models\TournamentTeam
+    {
+        return \App\Models\TournamentTeam::firstOrCreate(
+            [
+                'tournament_id' => $tournamentId,
+                'team_id' => $teamId,
+            ],
+            [
+                'request_date' => now()->toDateString(),
+                'status' => 'aprobado',
             ]
         );
     }

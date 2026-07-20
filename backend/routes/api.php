@@ -55,9 +55,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Standings
     Route::get('/standings', [StandingController::class, 'index'])->name('standings.index');
-    Route::get('/standings/{standing}', [StandingController::class, 'show'])->name('standings.show');
-
-    // Tournaments
+    Route::get('/standings/tournament/{tournament}', [StandingController::class, 'show'])->name('standings.show');
+        // Tournaments
     Route::apiResource('tournaments', TournamentController::class)->only(['index', 'show']);
 
     Route::middleware('role:admin')->group(function () {
