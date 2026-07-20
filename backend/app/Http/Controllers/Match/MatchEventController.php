@@ -7,7 +7,10 @@ use App\Http\Requests\MatchEvent\DeleteMatchEventRequest;
 use App\Http\Requests\MatchEvent\StoreMatchEventRequest;
 use App\Http\Requests\MatchEvent\UpdateMatchEventRequest;
 use App\Models\MatchEvent;
+use App\Services\ScorerService;
+use App\Services\SuspensionService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 
 class MatchEventController extends Controller
 {
@@ -25,7 +28,14 @@ class MatchEventController extends Controller
 
     public function store(StoreMatchEventRequest $request): JsonResponse
     {
-        $event = MatchEvent::create($request->validated());
+        $event = DB::transaction(function () use ($request): MatchEvent {
+            $event = MatchEvent::create($request->validated());
+
+            app(ScorerService::class)->updateForEvent($event);
+            app(SuspensionService::class)->updateForEvent($event);
+
+            return $event;
+        });
 
         return response()->json([
             'message' => 'Match event created successfully',
@@ -43,7 +53,14 @@ class MatchEventController extends Controller
 
     public function update(UpdateMatchEventRequest $request, MatchEvent $matchEvent): JsonResponse
     {
-        $matchEvent->update($request->validated());
+        $matchEvent = DB::transaction(function () use ($request, $matchEvent): MatchEvent {
+            $matchEvent->update($request->validated());
+
+            app(ScorerService::class)->updateForEvent($matchEvent);
+            app(SuspensionService::class)->updateForEvent($matchEvent);
+
+            return $matchEvent;
+        });
 
         return response()->json([
             'message' => 'Match event updated successfully',
@@ -53,7 +70,12 @@ class MatchEventController extends Controller
 
     public function destroy(DeleteMatchEventRequest $request, MatchEvent $matchEvent): JsonResponse
     {
-        $matchEvent->delete();
+        DB::transaction(function () use ($matchEvent): void {
+            app(ScorerService::class)->removeForEvent($matchEvent);
+            app(SuspensionService::class)->removeForEvent($matchEvent);
+
+            $matchEvent->delete();
+        });
 
         return response()->json(['message' => 'Match event deleted successfully']);
     }

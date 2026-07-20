@@ -2,64 +2,27 @@
 
 namespace App\Http\Controllers\Statistics;
 
+use App\Http\Controllers\Controller;
 use App\Models\Scorer;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ScorerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request): JsonResponse
     {
-        //
-    }
+        $query = Scorer::with(['player', 'tournament'])
+            ->orderByDesc('goals');
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        if ($request->has('tournament_id')) {
+            $query->where('tournament_id', $request->input('tournament_id'));
+        }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $scorers = $query->paginate(15);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Scorer $scorer)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Scorer $scorer)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Scorer $scorer)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Scorer $scorer)
-    {
-        //
+        return response()->json([
+            'message' => 'Scorers retrieved successfully',
+            'data' => $scorers,
+        ]);
     }
 }
