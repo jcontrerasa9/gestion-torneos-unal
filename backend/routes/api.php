@@ -3,6 +3,7 @@
 use App\Http\Controllers\Enrollment\PlayerRequestController;
 use App\Http\Controllers\Enrollment\TournamentTeamController;
 use App\Http\Controllers\Match\TournamentMatchController;
+use App\Http\Controllers\Statistics\StandingController;
 use App\Http\Controllers\Team\TeamController;
 use App\Http\Controllers\Tournament\TournamentController;
 use App\Http\Controllers\User\AuthController;
@@ -52,7 +53,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/tournament-teams/{tournamentTeam}', [TournamentTeamController::class, 'destroy'])->name('tournament-teams.destroy');
     });
 
-    // Tournaments
+    // Standings
+    Route::get('/standings', [StandingController::class, 'index'])->name('standings.index');
+    Route::get('/standings/tournament/{tournament}', [StandingController::class, 'show'])->name('standings.show');
+        // Tournaments
     Route::apiResource('tournaments', TournamentController::class)->only(['index', 'show']);
 
     Route::middleware('role:admin')->group(function () {

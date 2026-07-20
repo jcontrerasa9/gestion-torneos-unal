@@ -2,64 +2,54 @@
 
 namespace App\Http\Controllers\Statistics;
 
+use App\Http\Controllers\Controller;
 use App\Models\Standing;
+use App\Models\Tournament;
+use App\Services\StandingService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class StandingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request): JsonResponse
     {
-        //
+        $tournamentId = $request->query('tournament_id');
+
+        if ($tournamentId) {
+            $tournament = Tournament::findOrFail($tournamentId);
+            app(StandingService::class)->refreshForTournament($tournament);
+        } else {
+            foreach (Tournament::query()->get() as $tournament) {
+                app(StandingService::class)->refreshForTournament($tournament);
+            }
+        }
+
+        $standings = Standing::query()
+            ->when($tournamentId, fn ($query) => $query->where('tournament_id', $tournamentId))
+            ->with(['tournament', 'tournamentTeam.team'])
+            ->latest()
+            ->paginate(15);
+
+        return response()->json([
+            'message' => 'Standings retrieved successfully',
+            'data' => $standings,
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function show(Tournament $tournament): JsonResponse
     {
-        //
-    }
+        app(StandingService::class)->refreshForTournament($tournament);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $standings = Standing::where('tournament_id', $tournament->id)
+            ->with(['tournament', 'tournamentTeam.team'])
+            ->orderByDesc('points')
+            ->orderByDesc('goal_difference')
+            ->orderByDesc('goals_for')
+            ->get();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Standing $standing)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Standing $standing)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Standing $standing)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Standing $standing)
-    {
-        //
+        return response()->json([
+            'message' => 'Standings retrieved successfully',
+            'data' => $standings,
+        ]);
     }
 }
