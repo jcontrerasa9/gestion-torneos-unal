@@ -20,9 +20,13 @@ const STATUS_LABEL = {
 }
 
 function EnrollmentTable({ items, isAdmin, onApprove, onReject, onDelete }) {
+  const cols = isAdmin
+    ? 'minmax(0, 1fr) minmax(0, 1fr) minmax(80px, 0.6fr) minmax(100px, 0.7fr) auto'
+    : 'minmax(0, 1fr) minmax(0, 1fr) minmax(80px, 0.6fr) minmax(100px, 0.7fr)'
+
   return (
     <div className="table" role="table" aria-label="Inscripciones">
-      <div className="table__head" role="row">
+      <div className="table__head" role="row" style={{ gridTemplateColumns: cols }}>
         <div role="columnheader">Torneo</div>
         <div role="columnheader">Equipo</div>
         <div role="columnheader">Estado</div>
@@ -31,7 +35,7 @@ function EnrollmentTable({ items, isAdmin, onApprove, onReject, onDelete }) {
       </div>
 
       {items.map((i) => (
-        <div key={i.id} className="table__row" role="row">
+        <div key={i.id} className="table__row" role="row" style={{ gridTemplateColumns: cols }}>
           <div className="table__cell" role="cell">
             <span style={{ fontWeight: 600 }}>{i.tournament?.name ?? '—'}</span>
           </div>
@@ -94,16 +98,18 @@ function EnrollmentTable({ items, isAdmin, onApprove, onReject, onDelete }) {
 }
 
 function EnrollmentSkeleton() {
+  const cols = 'minmax(0, 1fr) minmax(0, 1fr) minmax(80px, 0.6fr) minmax(100px, 0.7fr)'
+
   return (
     <div className="table" aria-hidden="true">
-      <div className="table__head">
+      <div className="table__head" style={{ gridTemplateColumns: cols }}>
         <div>Torneo</div>
         <div>Equipo</div>
         <div>Estado</div>
         <div>Solicitud</div>
       </div>
       {Array.from({ length: 5 }).map((_, i) => (
-        <div key={i} className="skeleton-row">
+        <div key={i} className="skeleton-row" style={{ gridTemplateColumns: cols }}>
           <span className="skeleton skeleton--md" />
           <span className="skeleton skeleton--md" />
           <span className="skeleton skeleton--sm" />
