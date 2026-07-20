@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Enrollment;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TournamentTeamPlayer\DeleteTournamentTeamPlayerRequest;
+use App\Http\Requests\TournamentTeamPlayer\ShowTournamentTeamPlayerRequest;
 use App\Http\Requests\TournamentTeamPlayer\ToggleTournamentTeamPlayerRequest;
 use App\Models\TournamentTeamPlayer;
 use Illuminate\Http\JsonResponse;
@@ -31,7 +32,7 @@ class TournamentTeamPlayerController extends Controller
         ]);
     }
 
-    public function show(TournamentTeamPlayer $tournamentTeamPlayer): JsonResponse
+    public function show(ShowTournamentTeamPlayerRequest $request, TournamentTeamPlayer $tournamentTeamPlayer): JsonResponse
     {
         return response()->json([
             'message' => 'Tournament team player retrieved successfully',
