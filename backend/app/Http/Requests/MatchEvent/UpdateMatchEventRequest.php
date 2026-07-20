@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\MatchEvent;
 
+use App\Models\TournamentMatch;
+use App\Models\TournamentTeamPlayer;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -25,7 +27,34 @@ class UpdateMatchEventRequest extends FormRequest
     {
         return [
             'match_id' => ['sometimes', 'required', 'integer', 'exists:tournament_matches,id'],
-            'player_id' => ['sometimes', 'required', 'integer', 'exists:users,id'],
+            'player_id' => [
+                'sometimes',
+                'required',
+                'integer',
+                'exists:users,id',
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    $matchId = $this->input('match_id');
+
+                    if (! $matchId) {
+                        $event = $this->route('event');
+                        $matchId = $event?->match_id;
+                    }
+
+                    if ($matchId) {
+                        $match = TournamentMatch::find($matchId);
+
+                        if ($match) {
+                            $enrolled = TournamentTeamPlayer::where('player_id', $value)
+                                ->where('tournament_id', $match->tournament_id)
+                                ->exists();
+
+                            if (! $enrolled) {
+                                $fail('The player is not enrolled in this tournament.');
+                            }
+                        }
+                    }
+                },
+            ],
             'event_type' => ['sometimes', 'required', 'string', 'in:gol,tarjeta_amarilla,tarjeta_roja,sustitucion'],
             'minute' => ['sometimes', 'required', 'integer', 'min:0', 'max:120'],
             'description' => ['nullable', 'string', 'max:500'],

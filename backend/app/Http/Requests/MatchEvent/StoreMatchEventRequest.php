@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\MatchEvent;
 
+use App\Models\TournamentMatch;
+use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreMatchEventRequest extends FormRequest
@@ -18,7 +20,28 @@ class StoreMatchEventRequest extends FormRequest
     {
         return [
             'match_id' => ['required', 'integer', 'exists:tournament_matches,id'],
-            'player_id' => ['required', 'integer', 'exists:users,id'],
+            'player_id' => [
+                'required',
+                'integer',
+                'exists:users,id',
+                function (string $attribute, mixed $value, Closure $fail): void {
+                    $matchId = $this->input('match_id');
+
+                    if ($matchId) {
+                        $match = TournamentMatch::find($matchId);
+
+                        if ($match) {
+                            $enrolled = \App\Models\TournamentTeamPlayer::where('player_id', $value)
+                                ->where('tournament_id', $match->tournament_id)
+                                ->exists();
+
+                            if (! $enrolled) {
+                                $fail('The player is not enrolled in this tournament.');
+                            }
+                        }
+                    }
+                },
+            ],
             'event_type' => ['required', 'string', 'in:gol,tarjeta_amarilla,tarjeta_roja,sustitucion'],
             'minute' => ['required', 'integer', 'min:0', 'max:120'],
             'description' => ['nullable', 'string', 'max:500'],
