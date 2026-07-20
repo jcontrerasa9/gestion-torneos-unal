@@ -18,8 +18,8 @@ const STATUS_LABEL = matchLabels
 
 function MatchesTable({ items, canManage, onEdit, onDelete }) {
   const cols = canManage
-    ? 'minmax(0, 1.1fr) minmax(0, 1.5fr) auto auto auto'
-    : 'minmax(0, 1.1fr) minmax(0, 1.5fr) auto auto'
+    ? 'minmax(0, 1.1fr) minmax(0, 1.5fr) minmax(80px, 0.7fr) minmax(70px, 0.6fr) auto'
+    : 'minmax(0, 1.1fr) minmax(0, 1.5fr) minmax(80px, 0.7fr) minmax(70px, 0.6fr)'
 
   return (
     <div className="table" role="table" aria-label="Partidos">
@@ -107,16 +107,18 @@ function MatchesTable({ items, canManage, onEdit, onDelete }) {
 }
 
 function MatchesSkeleton() {
+  const cols = 'minmax(0, 1.1fr) minmax(0, 1.5fr) minmax(80px, 0.7fr) minmax(70px, 0.6fr)'
+
   return (
     <div className="table" aria-hidden="true">
-      <div className="table__head">
+      <div className="table__head" style={{ gridTemplateColumns: cols }}>
         <div>Torneo · Fecha</div>
         <div>Partido</div>
         <div>Estado</div>
         <div>Resultado</div>
       </div>
       {Array.from({ length: 5 }).map((_, i) => (
-        <div key={i} className="skeleton-row">
+        <div key={i} className="skeleton-row" style={{ gridTemplateColumns: cols }}>
           <span className="skeleton skeleton--md" />
           <span className="skeleton skeleton--md" />
           <span className="skeleton skeleton--sm" />
