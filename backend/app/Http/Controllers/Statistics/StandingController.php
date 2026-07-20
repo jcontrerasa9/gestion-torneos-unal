@@ -2,64 +2,32 @@
 
 namespace App\Http\Controllers\Statistics;
 
+use App\Http\Controllers\Controller;
 use App\Models\Standing;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class StandingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        $standings = Standing::query()
+            ->with(['tournament', 'tournamentTeam.team'])
+            ->latest()
+            ->paginate(15);
+
+        return response()->json([
+            'message' => 'Standings retrieved successfully',
+            'data' => $standings,
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function show(Standing $standing): JsonResponse
     {
-        //
-    }
+        $standing->load(['tournament', 'tournamentTeam.team']);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Standing $standing)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Standing $standing)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Standing $standing)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Standing $standing)
-    {
-        //
+        return response()->json([
+            'message' => 'Standing retrieved successfully',
+            'data' => $standing,
+        ]);
     }
 }
