@@ -4,25 +4,9 @@ import { api } from '../api/client'
 import { TrophyIcon } from '../components/icons'
 
 function StandingsTable({ standings }) {
-  const rows = standings.map((s, i) => {
-    const team = s.tournament_team?.team
-    return {
-      pos: i + 1,
-      name: team?.name ?? '—',
-      pj: s.matches_played,
-      g: s.wins,
-      e: s.draws,
-      p: s.losses,
-      gf: s.goals_for,
-      gc: s.goals_against,
-      dif: s.goal_difference,
-      pts: s.points,
-    }
-  })
-
-  if (rows.length === 0) {
+  if (!standings.length) {
     return (
-      <section className="empty" style={{ marginTop: 32 }}>
+      <section className="empty">
         <span className="empty__mark">
           <TrophyIcon />
         </span>
@@ -35,92 +19,75 @@ function StandingsTable({ standings }) {
   }
 
   return (
-    <div
-      className="table"
-      role="table"
-      aria-label="Tabla de posiciones"
-    >
-      <div
-        className="table__head standings__head"
-        role="row"
-      >
+    <div className="standings-table" role="table" aria-label="Tabla de posiciones">
+      <div className="standings-header" role="row">
         <div role="columnheader">#</div>
-        <div role="columnheader" className="standings__team-col">Equipo</div>
-        <div role="columnheader" className="standings__num">PJ</div>
-        <div role="columnheader" className="standings__num">G</div>
-        <div role="columnheader" className="standings__num">E</div>
-        <div role="columnheader" className="standings__num">P</div>
-        <div role="columnheader" className="standings__num">GF</div>
-        <div role="columnheader" className="standings__num">GC</div>
-        <div role="columnheader" className="standings__num">Dif</div>
-        <div role="columnheader" className="standings__num standings__pts-col">
-          Pts
-        </div>
+        <div role="columnheader" style={{ paddingLeft: 6 }}>Equipo</div>
+        <div role="columnheader">PJ</div>
+        <div role="columnheader">G</div>
+        <div role="columnheader">E</div>
+        <div role="columnheader">P</div>
+        <div role="columnheader">GF</div>
+        <div role="columnheader">GC</div>
+        <div role="columnheader">Dif</div>
+        <div role="columnheader">Pts</div>
       </div>
 
-      {rows.map((r) => (
-        <div
-          key={r.name + r.pos}
-          className="table__row standings__row"
-          role="row"
-        >
-          <div className="table__cell standings__pos" role="cell">
-            {r.pos <= 3 ? (
-              <span className={`standings__medal standings__medal--${r.pos}`}>
-                {r.pos}
-              </span>
-            ) : (
-              r.pos
-            )}
+      {standings.map((s, i) => {
+        const team = s.tournament_team?.team
+        return (
+          <div key={s.id} className="standings-row" role="row">
+            <div className="standings-cell standings-cell--pos" role="cell">
+              {i + 1 <= 3 ? (
+                <span className={`standings-medal standings-medal--${i + 1}`}>
+                  {i + 1}
+                </span>
+              ) : (
+                i + 1
+              )}
+            </div>
+            <div className="standings-cell standings-cell--team" role="cell">
+              {team?.name ?? '—'}
+            </div>
+            <div className="standings-cell" role="cell">{s.matches_played}</div>
+            <div className="standings-cell" role="cell">{s.wins}</div>
+            <div className="standings-cell" role="cell">{s.draws}</div>
+            <div className="standings-cell" role="cell">{s.losses}</div>
+            <div className="standings-cell" role="cell">{s.goals_for}</div>
+            <div className="standings-cell" role="cell">{s.goals_against}</div>
+            <div className="standings-cell standings-dif" role="cell">
+              {s.goal_difference > 0 ? `+${s.goal_difference}` : s.goal_difference}
+            </div>
+            <div className="standings-cell standings-cell--pts" role="cell">
+              {s.points}
+            </div>
           </div>
-          <div
-            className="table__cell standings__team-col"
-            role="cell"
-            style={{ fontWeight: 600 }}
-          >
-            {r.name}
-          </div>
-          <div className="table__cell standings__num" role="cell">{r.pj}</div>
-          <div className="table__cell standings__num" role="cell">{r.g}</div>
-          <div className="table__cell standings__num" role="cell">{r.e}</div>
-          <div className="table__cell standings__num" role="cell">{r.p}</div>
-          <div className="table__cell standings__num" role="cell">{r.gf}</div>
-          <div className="table__cell standings__num" role="cell">{r.gc}</div>
-          <div className="table__cell standings__num" role="cell">
-            {r.dif > 0 ? `+${r.dif}` : r.dif}
-          </div>
-          <div
-            className="table__cell standings__num standings__pts"
-            role="cell"
-          >
-            {r.pts}
-          </div>
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }
 
 function StandingsSkeleton() {
   return (
-    <div className="table" aria-hidden="true">
-      <div className="table__head standings__head">
+    <div className="standings-table" aria-hidden="true">
+      <div className="standings-header">
         <div>#</div><div>Equipo</div>
-        <div></div><div></div><div></div><div></div>
-        <div></div><div></div><div></div><div>Pts</div>
+        <div>PJ</div><div>G</div><div>E</div><div>P</div>
+        <div>GF</div><div>GC</div><div>Dif</div><div>Pts</div>
       </div>
       {Array.from({ length: 10 }).map((_, i) => (
-        <div key={i} className="skeleton-row standings__row">
-          <span className="skeleton" style={{ width: 22, height: 14 }} />
+        <div key={i} className="standings-skel-row">
+          <span className="skeleton" style={{ width: 20, height: 14, justifySelf: 'center' }} />
           <span className="skeleton skeleton--md" />
-          <span className="skeleton skeleton--sm" />
-          <span className="skeleton skeleton--sm" />
-          <span className="skeleton skeleton--sm" />
-          <span className="skeleton skeleton--sm" />
-          <span className="skeleton skeleton--sm" />
-          <span className="skeleton skeleton--sm" />
-          <span className="skeleton skeleton--sm" />
-          <span className="skeleton skeleton--sm" />
+          <span className="skeleton" style={{ width: 24, height: 14, justifySelf: 'center' }} />
+          <span className="skeleton" style={{ width: 24, height: 14, justifySelf: 'center' }} />
+          <span className="skeleton" style={{ width: 24, height: 14, justifySelf: 'center' }} />
+          <span className="skeleton" style={{ width: 24, height: 14, justifySelf: 'center' }} />
+          <span className="skeleton" style={{ width: 24, height: 14, justifySelf: 'center' }} />
+          <span className="skeleton" style={{ width: 24, height: 14, justifySelf: 'center' }} />
+          <span className="skeleton" style={{ width: 24, height: 14, justifySelf: 'center' }} />
+          <span className="skeleton" style={{ width: 24, height: 14, justifySelf: 'center' }} />
         </div>
       ))}
     </div>
@@ -176,7 +143,7 @@ export default function StandingsPage() {
           </p>
         </div>
         {tournamentOpts.length > 0 && (
-          <div className="standings__selector">
+          <div className="standings-selector">
             <label htmlFor="tournament-select" className="field__label" style={{ marginBottom: 0 }}>
               Torneo
             </label>
@@ -197,7 +164,7 @@ export default function StandingsPage() {
       </header>
 
       {error && (
-        <div className="error-banner" role="alert" style={{ marginTop: 16 }}>
+        <div className="error-banner" role="alert">
           {error}
           <button
             type="button"
