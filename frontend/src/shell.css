@@ -282,6 +282,30 @@
   border: 1px solid rgba(245, 158, 11, 0.32);
 }
 
+.badge--gol {
+  color: #86efac;
+  background: rgba(34, 197, 94, 0.13);
+  border: 1px solid rgba(34, 197, 94, 0.26);
+}
+
+.badge--tarjeta_amarilla {
+  color: #fde68a;
+  background: rgba(245, 158, 11, 0.20);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.badge--tarjeta_roja {
+  color: #fda4b1;
+  background: rgba(244, 63, 94, 0.15);
+  border: 1px solid rgba(244, 63, 94, 0.28);
+}
+
+.badge--sustitucion {
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.13);
+  border: 1px solid rgba(59, 130, 246, 0.24);
+}
+
 .badge--aprobada {
   color: #86efac;
   background: rgba(34, 197, 94, 0.12);
