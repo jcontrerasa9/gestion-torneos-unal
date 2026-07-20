@@ -39,7 +39,6 @@ function StandingsTable({ standings }) {
       className="table"
       role="table"
       aria-label="Tabla de posiciones"
-      style={{ marginTop: 24 }}
     >
       <div
         className="table__head standings__head"
@@ -104,15 +103,15 @@ function StandingsTable({ standings }) {
 
 function StandingsSkeleton() {
   return (
-    <div className="table" aria-hidden="true" style={{ marginTop: 24 }}>
+    <div className="table" aria-hidden="true">
       <div className="table__head standings__head">
         <div>#</div><div>Equipo</div>
-        <div>PJ</div><div>G</div><div>E</div><div>P</div>
-        <div>GF</div><div>GC</div><div>Dif</div><div>Pts</div>
+        <div></div><div></div><div></div><div></div>
+        <div></div><div></div><div></div><div>Pts</div>
       </div>
       {Array.from({ length: 10 }).map((_, i) => (
-        <div key={i} className="skeleton-row">
-          <span className="skeleton skeleton--sm" />
+        <div key={i} className="skeleton-row standings__row">
+          <span className="skeleton" style={{ width: 22, height: 14 }} />
           <span className="skeleton skeleton--md" />
           <span className="skeleton skeleton--sm" />
           <span className="skeleton skeleton--sm" />
@@ -173,31 +172,29 @@ export default function StandingsPage() {
         <div className="page__title-block">
           <h1 className="page__title">Tabla de posiciones</h1>
           <p className="page__subtitle">
-            Consulta la clasificación actualizada de los torneos universitarios.
+            Clasificación actualizada de los torneos universitarios UNAL La Nubia.
           </p>
         </div>
+        {tournamentOpts.length > 0 && (
+          <div className="standings__selector">
+            <label htmlFor="tournament-select" className="field__label" style={{ marginBottom: 0 }}>
+              Torneo
+            </label>
+            <select
+              id="tournament-select"
+              className="field__select"
+              value={selected}
+              onChange={(e) => setSelected(e.target.value)}
+            >
+              {tournamentOpts.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </header>
-
-      {tournamentOpts.length > 0 && (
-        <div style={{ maxWidth: 340 }}>
-          <label htmlFor="tournament-select" className="field__label">
-            Torneo
-          </label>
-          <select
-            id="tournament-select"
-            className="field__select"
-            value={selected}
-            onChange={(e) => setSelected(e.target.value)}
-            style={{ marginTop: 8 }}
-          >
-            {tournamentOpts.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
 
       {error && (
         <div className="error-banner" role="alert" style={{ marginTop: 16 }}>

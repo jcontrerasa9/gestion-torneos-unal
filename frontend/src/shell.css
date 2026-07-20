@@ -624,12 +624,8 @@ dialog.modal::backdrop {
 
 .standings__head,
 .standings__row {
-  grid-template-columns:
-    40px
-    minmax(120px, 2fr)
-    36px 36px 36px 36px
-    36px 36px 36px
-    46px;
+  grid-template-columns: 44px minmax(140px, 2.5fr) 42px 42px 42px 42px 42px 42px 44px 50px;
+  gap: 0;
 }
 
 .standings__num {
@@ -641,16 +637,18 @@ dialog.modal::backdrop {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  padding-inline: 8px;
 }
 
 .standings__pts-col {
   color: var(--purple-light);
   font-weight: 700;
+  text-align: center;
 }
 
 .standings__pos {
   text-align: center;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .standings__medal {
@@ -660,7 +658,7 @@ dialog.modal::backdrop {
   width: 22px;
   height: 22px;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   color: #fff;
 }
@@ -673,6 +671,17 @@ dialog.modal::backdrop {
   font-weight: 800;
   font-size: 14px;
   color: var(--purple-light);
+  text-align: center;
+}
+
+.standings__selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.standings__selector .field__select {
+  min-width: 280px;
 }
 
 .field__hint {
