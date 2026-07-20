@@ -2,8 +2,10 @@ import { useCallback, useEffect, useState } from 'react'
 import * as prApi from '../api/player-requests'
 import { useAuth } from '../context/useAuth'
 import Badge from '../components/ui/Badge'
+import ConfirmDialog from '../components/ui/ConfirmDialog'
 import Pagination from '../components/ui/Pagination'
-import { AlertIcon, UserIcon } from '../components/icons'
+import { AlertIcon, CheckIcon, PlusIcon, TrashIcon, UserIcon, XIcon } from '../components/icons'
+import PlayerRequestFormModal from '../components/player-requests/PlayerRequestFormModal'
 
 const STATUS_LABEL = {
   pendiente: 'Pendiente',
@@ -11,7 +13,7 @@ const STATUS_LABEL = {
   rechazada: 'Rechazada',
 }
 
-function RequestsTable({ items, canManage }) {
+function RequestsTable({ items, canManage, onApprove, onReject, onDelete }) {
   const cols = canManage
     ? 'minmax(0, 0.8fr) minmax(0, 1fr) auto auto auto auto auto'
     : 'minmax(0, 0.8fr) minmax(0, 1fr) auto auto auto auto'
@@ -68,7 +70,41 @@ function RequestsTable({ items, canManage }) {
           </div>
 
           {canManage && (
-            <div className="table__cell table__cell--actions" role="cell" />
+            <div className="table__cell table__cell--actions" role="cell">
+              {r.status === 'pendiente' && (
+                <>
+                  <button
+                    type="button"
+                    className="icon-btn"
+                    onClick={() => onApprove(r)}
+                    aria-label={`Aprobar solicitud de ${r.player?.first_name}`}
+                    title="Aprobar"
+                    style={{ color: '#86efac' }}
+                  >
+                    <CheckIcon />
+                  </button>
+                  <button
+                    type="button"
+                    className="icon-btn"
+                    onClick={() => onReject(r)}
+                    aria-label={`Rechazar solicitud de ${r.player?.first_name}`}
+                    title="Rechazar"
+                    style={{ color: '#fda4b1' }}
+                  >
+                    <XIcon />
+                  </button>
+                </>
+              )}
+              <button
+                type="button"
+                className="icon-btn is-danger"
+                onClick={() => onDelete(r)}
+                aria-label={`Eliminar solicitud de ${r.player?.first_name}`}
+                title="Eliminar"
+              >
+                <TrashIcon />
+              </button>
+            </div>
           )}
         </div>
       ))}
@@ -128,6 +164,12 @@ export default function PlayerRequestsPage() {
   const [fetchStatus, setFetchStatus] = useState('loading')
   const [error, setError] = useState(null)
 
+  const [modalOpen, setModalOpen] = useState(false)
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [deleting, setDeleting] = useState(null)
+  const [deleteBusy, setDeleteBusy] = useState(false)
+  const [deleteError, setDeleteError] = useState(null)
+
   const load = useCallback(async (targetPage) => {
     setFetchStatus('loading')
     setError(null)
@@ -151,48 +193,134 @@ export default function PlayerRequestsPage() {
     setPage(next)
   }
 
+  function openCreate() {
+    setModalOpen(true)
+  }
+
+  function handleSaved() {
+    load(page)
+  }
+
+  async function handleApprove(item) {
+    try {
+      await prApi.update(item.id, { status: 'aprobada' })
+      load(page)
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  async function handleReject(item) {
+    try {
+      await prApi.update(item.id, { status: 'rechazada' })
+      load(page)
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  function openDelete(item) {
+    setDeleting(item)
+    setDeleteError(null)
+    setConfirmOpen(true)
+  }
+
+  async function confirmDelete() {
+    setDeleteBusy(true)
+    setDeleteError(null)
+    try {
+      await prApi.remove(deleting.id)
+      setConfirmOpen(false)
+      setDeleting(null)
+      load(page)
+    } catch (err) {
+      setDeleteError(err.message)
+    } finally {
+      setDeleteBusy(false)
+    }
+  }
+
   return (
-    <div aria-busy={fetchStatus === 'loading'}>
-      <header className="page__head">
-        <div className="page__title-block">
-          <h1 className="page__title">Solicitudes</h1>
-          <p className="page__subtitle">
-            Solicita ingreso a un equipo y consulta el estado de tus peticiones.
-          </p>
-        </div>
-      </header>
+    <>
+      <div aria-busy={fetchStatus === 'loading'}>
+        <header className="page__head">
+          <div className="page__title-block">
+            <h1 className="page__title">Solicitudes</h1>
+            <p className="page__subtitle">
+              Solicita ingreso a un equipo y consulta el estado de tus peticiones.
+            </p>
+          </div>
+          {canCreate && (
+            <div className="page__actions">
+              <button type="button" className="btn btn--primary btn--sm" onClick={openCreate}>
+                <span className="btn__content">
+                  <PlusIcon />
+                  Nueva solicitud
+                </span>
+              </button>
+            </div>
+          )}
+        </header>
 
-      {error && (
-        <div className="error-banner" role="alert">
-          <AlertIcon />
-          {error}
-          <button
-            type="button"
-            className="auth__switch"
-            onClick={() => load(page)}
-            style={{ marginLeft: 'auto' }}
-          >
-            Reintentar
-          </button>
-        </div>
-      )}
+        {error && (
+          <div className="error-banner" role="alert">
+            <AlertIcon />
+            {error}
+            <button
+              type="button"
+              className="auth__switch"
+              onClick={() => load(page)}
+              style={{ marginLeft: 'auto' }}
+            >
+              Reintentar
+            </button>
+          </div>
+        )}
 
-      {fetchStatus === 'loading' && <RequestsSkeleton />}
+        {fetchStatus === 'loading' && <RequestsSkeleton />}
 
-      {fetchStatus === 'ready' && items.length === 0 && (
-        <EmptyState canCreate={canCreate} />
-      )}
+        {fetchStatus === 'ready' && items.length === 0 && (
+          <EmptyState canCreate={canCreate} />
+        )}
 
-      {fetchStatus === 'ready' && items.length > 0 && (
-        <>
-          <RequestsTable items={items} canManage={canManage} />
-          <Pagination
-            page={page}
-            lastPage={lastPage}
-            onChange={handleChangePage}
-          />
-        </>
-      )}
-    </div>
+        {fetchStatus === 'ready' && items.length > 0 && (
+          <>
+            <RequestsTable
+              items={items}
+              canManage={canManage}
+              onApprove={handleApprove}
+              onReject={handleReject}
+              onDelete={openDelete}
+            />
+            <Pagination
+              page={page}
+              lastPage={lastPage}
+              onChange={handleChangePage}
+            />
+          </>
+        )}
+      </div>
+
+      <PlayerRequestFormModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSaved={handleSaved}
+      />
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Eliminar solicitud"
+        message={
+          deleting
+            ? `¿Seguro que quieres eliminar la solicitud de «${deleting.player?.first_name}» para «${deleting.tournament_team?.team?.name}»?`
+            : ''
+        }
+        confirmLabel="Eliminar solicitud"
+        error={deleteError}
+        busy={deleteBusy}
+        onConfirm={confirmDelete}
+        onClose={() => setConfirmOpen(false)}
+      />
+    </>
   )
 }
