@@ -45,7 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Tournament Team requests
-    Route::middleware('role:admin,captain')->group(function () {
+    Route::middleware('role:admin,captain,player')->group(function () {
         Route::get('/tournament-teams', [TournamentTeamController::class, 'index'])->name('tournament-teams.index');
         Route::post('/tournament-teams', [TournamentTeamController::class, 'store'])->name('tournament-teams.store');
         Route::get('/tournament-teams/{tournamentTeam}', [TournamentTeamController::class, 'show'])->name('tournament-teams.show');
@@ -56,7 +56,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Standings
     Route::get('/standings', [StandingController::class, 'index'])->name('standings.index');
     Route::get('/standings/tournament/{tournament}', [StandingController::class, 'show'])->name('standings.show');
-        // Tournaments
+    // Tournaments
     Route::apiResource('tournaments', TournamentController::class)->only(['index', 'show']);
 
     Route::middleware('role:admin')->group(function () {

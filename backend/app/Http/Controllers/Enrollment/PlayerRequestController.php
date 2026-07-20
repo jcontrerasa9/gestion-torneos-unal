@@ -15,7 +15,7 @@ class PlayerRequestController extends Controller
     public function index(): JsonResponse
     {
         $user = auth()->user();
-        $query = PlayerRequest::query();
+        $query = PlayerRequest::with(['tournamentTeam.tournament', 'tournamentTeam.team', 'player']);
 
         if ($user->role->name === 'player') {
             $query->where('player_id', $user->id);
