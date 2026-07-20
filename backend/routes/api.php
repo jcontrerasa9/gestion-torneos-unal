@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\Discipline\SuspensionController;
 use App\Http\Controllers\Enrollment\PlayerRequestController;
 use App\Http\Controllers\Enrollment\TournamentTeamController;
 use App\Http\Controllers\Enrollment\TournamentTeamPlayerController;
 use App\Http\Controllers\Match\MatchEventController;
 use App\Http\Controllers\Match\TournamentMatchController;
+use App\Http\Controllers\Statistics\ScorerController;
 use App\Http\Controllers\Statistics\StandingController;
 use App\Http\Controllers\Team\TeamController;
 use App\Http\Controllers\Tournament\TournamentController;
@@ -103,5 +105,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/match-events', [MatchEventController::class, 'store'])->name('match-events.store');
         Route::put('/match-events/{event}', [MatchEventController::class, 'update'])->name('match-events.update');
         Route::delete('/match-events/{event}', [MatchEventController::class, 'destroy'])->name('match-events.destroy');
+    });
+
+    // Scorers
+    Route::get('/scorers', [ScorerController::class, 'index'])->name('scorers.index');
+
+    // Suspensions
+    Route::get('/suspensions', [SuspensionController::class, 'index'])->name('suspensions.index');
+
+    Route::middleware('role:admin,referee')->group(function () {
+        Route::post('/suspensions', [SuspensionController::class, 'store'])->name('suspensions.store');
+        Route::delete('/suspensions/{suspension}', [SuspensionController::class, 'destroy'])->name('suspensions.destroy');
     });
 });
