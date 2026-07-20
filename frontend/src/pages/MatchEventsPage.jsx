@@ -155,26 +155,10 @@ function EventFormModal({ open, event, onClose, onSaved }) {
     if (!form.match_id) { setPlayers([]); return }
     api.get(`/tournament-matches/${form.match_id}`).then((r) => {
       const match = r.data
-      api.get(`/tournaments/${match.tournament_id}`).then((tr) => {
-        const teams = tr.data?.tournament_teams || []
-        const ids = teams.map((tt) => tt.id)
-        if (!ids.length) { setPlayers([]); return }
-        const playerMap = new Map()
-        const fetches = ids.map((ttId) =>
-          api.get(`/tournament-teams/${ttId}`).then((res) => {
-            const tt = res.data
-            if (tt?.players) {
-              tt.players.forEach((p) => {
-                if (p.player && !playerMap.has(p.player.id)) {
-                  playerMap.set(p.player.id, p.player)
-                }
-              })
-            }
-          }).catch(() => {})
-        )
-        Promise.all(fetches).then(() => setPlayers(Array.from(playerMap.values())))
-      }).catch(() => {})
-    }).catch(() => {})
+      api.get(`/tournaments/${match.tournament_id}/players`).then((res) => {
+        setPlayers(res.data || [])
+      }).catch(() => setPlayers([]))
+    }).catch(() => setPlayers([]))
   }, [form.match_id])
 
   function update(f) { return (e) => setForm((p) => ({ ...p, [f]: e.target.value })) }
