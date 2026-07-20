@@ -158,11 +158,12 @@ function EventFormModal({ open, event, onClose, onSaved }) {
       setForm((p) => ({ ...p, [f]: val }))
       if (f === 'match_id' && val) {
         setPlayers([])
-        api.get(`/tournament-matches/${val}`).then((r) => {
-          api.get(`/tournaments/${r.data.tournament_id}/players`).then((res) => {
+        const selected = matches.find((m) => String(m.id) === val)
+        if (selected?.tournament_id) {
+          api.get(`/tournaments/${selected.tournament_id}/players`).then((res) => {
             setPlayers(res.data || [])
           }).catch(() => setPlayers([]))
-        }).catch(() => setPlayers([]))
+        }
       }
       if (f === 'match_id' && !val) {
         setPlayers([])
