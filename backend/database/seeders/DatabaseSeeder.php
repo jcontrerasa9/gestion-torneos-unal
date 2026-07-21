@@ -203,7 +203,7 @@ class DatabaseSeeder extends Seeder
             'approval_date' => now()->subDays(15)->toDateString(),
         ]);
 
-        for ($i = 0; $i < 11; $i++) {
+        for ($i = 1; $i < 12; $i++) {
             PlayerRequest::factory()->approved()->create([
                 'tournament_team_id' => $t1Enrollments[array_rand($t1Enrollments->toArray())]->id,
                 'player_id' => $allPlayers[$i]->id,
