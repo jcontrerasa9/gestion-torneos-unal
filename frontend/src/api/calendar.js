@@ -1,7 +1,7 @@
-const BASE_URL = import.meta.env.VITE_API_URL || '/api'
+const PUBLIC_URL = import.meta.env.VITE_PUBLIC_URL || window.location.origin
 
 function buildFeedUrl(path) {
-  return `${BASE_URL}${path}`
+  return `${PUBLIC_URL}${path}`
 }
 
 function toWebcal(url) {
@@ -9,11 +9,11 @@ function toWebcal(url) {
 }
 
 export function getTournamentFeedUrl(tournamentId) {
-  return buildFeedUrl(`/tournaments/${tournamentId}/calendar.ics`)
+  return buildFeedUrl(`/api/tournaments/${tournamentId}/calendar.ics`)
 }
 
 export function getAllFeedUrl() {
-  return buildFeedUrl('/calendar.ics')
+  return buildFeedUrl('/api/calendar.ics')
 }
 
 export function getGoogleCalendarUrl(feedUrl, name) {
