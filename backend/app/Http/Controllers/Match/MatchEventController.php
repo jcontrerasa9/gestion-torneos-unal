@@ -16,7 +16,7 @@ class MatchEventController extends Controller
 {
     public function index(): JsonResponse
     {
-        $events = MatchEvent::with(['match.tournament', 'player'])
+        $events = MatchEvent::with(['match.tournament', 'match.homeTeam', 'match.awayTeam', 'player'])
             ->latest()
             ->paginate(15);
 
