@@ -6,6 +6,7 @@ export const navItems = [
   { key: 'matches', label: 'Partidos', icon: CalendarIcon, roles: ['admin', 'captain', 'player', 'referee', 'student'] },
   { key: 'standings', label: 'Posiciones', icon: TrophyIcon, roles: ['admin', 'captain', 'player', 'referee', 'student'] },
   { key: 'scorers', label: 'Goleadores', icon: TrophyIcon, roles: ['admin', 'captain', 'player', 'referee', 'student'] },
+  { key: 'roster', label: 'Plantilla', icon: UserIcon, roles: ['admin', 'captain', 'player'] },
   { key: 'match-events', label: 'Eventos', icon: CalendarIcon, roles: ['admin', 'referee'] },
   { key: 'suspensions', label: 'Sanciones', icon: AlertIcon, roles: ['admin'] },
   { key: 'enrollment', label: 'Inscripciones', icon: CheckIcon, roles: ['admin', 'captain'] },
