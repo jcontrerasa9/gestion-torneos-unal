@@ -47,16 +47,19 @@ class UserFactory extends Factory
         'Arango', 'Mejía', 'Giraldo', 'Betancur', 'Salazar',
     ];
 
+    private static int $emailCounter = 0;
+
     public function definition(): array
     {
         $firstName = fake()->randomElement(self::FIRST_NAMES);
         $lastName = fake()->randomElement(self::LAST_NAMES);
+        self::$emailCounter++;
 
         return [
             'role_id' => null,
             'first_name' => $firstName,
             'last_name' => $lastName,
-            'email' => strtolower($firstName . '.' . $lastName . '@unal.edu.co'),
+            'email' => strtolower($firstName . '.' . $lastName . self::$emailCounter . '@unal.edu.co'),
             'password' => static::$password ??= Hash::make('password'),
             'phone' => '3' . fake()->numerify('## ### ####'),
             'active' => true,
