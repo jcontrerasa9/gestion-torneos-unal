@@ -6,7 +6,7 @@ import { AlertIcon, EditIcon, PlusIcon, ShieldIcon, TrashIcon } from '../compone
 import TeamFormModal from '../components/teams/TeamFormModal'
 import ConfirmDialog from '../components/ui/ConfirmDialog'
 
-function TeamsTable({ items, canManage, onEdit, onDelete }) {
+function TeamsTable({ items, canManage, onEdit, onDelete, onNavigateToRoster }) {
   const cols = canManage
     ? 'minmax(0, 1fr) minmax(0, 0.8fr) auto'
     : 'minmax(0, 1fr) minmax(0, 0.8fr)'
@@ -33,6 +33,11 @@ function TeamsTable({ items, canManage, onEdit, onDelete }) {
 
           {canManage && (
             <div className="table__cell table__cell--actions" role="cell">
+              <button type="button" className="icon-btn"
+                onClick={() => onNavigateToRoster?.()}
+                aria-label={`Ver plantilla de ${t.name}`} title="Ver plantilla">
+                <span style={{ fontSize: 15 }}>👥</span>
+              </button>
               <button
                 type="button"
                 className="icon-btn"
@@ -94,7 +99,7 @@ function EmptyState({ canManage }) {
   )
 }
 
-export default function TeamsPage() {
+export default function TeamsPage({ onNavigateToRoster }) {
   const { user } = useAuth()
   const canManage = user?.role?.name === 'admin' || user?.role?.name === 'captain'
 
@@ -220,6 +225,7 @@ export default function TeamsPage() {
               canManage={canManage}
               onEdit={openEdit}
               onDelete={openDelete}
+              onNavigateToRoster={onNavigateToRoster}
             />
             <Pagination
               page={page}

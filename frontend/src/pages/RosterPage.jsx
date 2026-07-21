@@ -9,9 +9,13 @@ import { AlertIcon, UserIcon } from '../components/icons'
 // ── Table ──
 
 function RosterTable({ items, canManage, onToggle, onRemove }) {
+  const cols = canManage
+    ? 'minmax(0, 1.2fr) minmax(0, 0.9fr) minmax(0, 0.8fr) minmax(0, 0.6fr) auto auto'
+    : 'minmax(0, 1.2fr) minmax(0, 0.9fr) minmax(0, 0.8fr) minmax(0, 0.6fr) auto'
+
   return (
     <div className="table" role="table" aria-label="Plantilla">
-      <div className="table__head" role="row">
+      <div className="table__head" role="row" style={{ gridTemplateColumns: cols }}>
         <div role="columnheader">Jugador</div>
         <div role="columnheader">Equipo</div>
         <div role="columnheader">Torneo</div>
@@ -21,7 +25,7 @@ function RosterTable({ items, canManage, onToggle, onRemove }) {
       </div>
 
       {items.map((p) => (
-        <div key={p.id} className="table__row" role="row">
+        <div key={p.id} className="table__row" role="row" style={{ gridTemplateColumns: cols }}>
           <div className="table__cell" role="cell">
             <div className="table__stack">
               <span style={{ fontWeight: 600 }}>
@@ -64,11 +68,15 @@ function RosterTable({ items, canManage, onToggle, onRemove }) {
 }
 
 function RosterSkeleton() {
+  const cols = 'minmax(0, 1.2fr) minmax(0, 0.9fr) minmax(0, 0.8fr) minmax(0, 0.6fr) auto'
+
   return (
     <div className="table" aria-hidden="true">
-      <div className="table__head"><div>Jugador</div><div>Equipo</div><div>Torneo</div><div>Posición</div><div>Estado</div></div>
+      <div className="table__head" style={{ gridTemplateColumns: cols }}>
+        <div>Jugador</div><div>Equipo</div><div>Torneo</div><div>Posición</div><div>Estado</div>
+      </div>
       {Array.from({ length: 5 }).map((_, i) => (
-        <div key={i} className="skeleton-row">
+        <div key={i} className="skeleton-row" style={{ gridTemplateColumns: cols }}>
           <span className="skeleton skeleton--md" />
           <span className="skeleton skeleton--md" />
           <span className="skeleton skeleton--md" />

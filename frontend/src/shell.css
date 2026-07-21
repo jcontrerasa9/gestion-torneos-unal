@@ -19,13 +19,21 @@
   z-index: 50;
   display: flex;
   align-items: center;
-  gap: 12px;
   padding: 10px 4%;
   background: rgba(12, 12, 19, 0.72);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--line);
   overflow-x: auto;
   white-space: nowrap;
+}
+
+.shell__topbar-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-grow: 1;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .shell__topbar::-webkit-scrollbar {
