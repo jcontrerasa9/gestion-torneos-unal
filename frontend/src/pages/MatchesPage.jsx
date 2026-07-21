@@ -12,6 +12,7 @@ import {
 } from '../components/icons'
 import { formatDate, formatTime, matchLabels } from '../utils/format'
 import MatchFormModal from '../components/matches/MatchFormModal'
+import CalendarSubscription from '../components/matches/CalendarSubscription'
 import ConfirmDialog from '../components/ui/ConfirmDialog'
 
 const STATUS_LABEL = matchLabels
@@ -230,16 +231,17 @@ export default function MatchesPage() {
             Programa y gestiona los encuentros de cada torneo de la UNAL La Nubia.
           </p>
         </div>
-        {canManage && (
-          <div className="page__actions">
+        <div className="page__actions">
+          <CalendarSubscription />
+          {canManage && (
             <button type="button" className="btn btn--primary btn--sm" onClick={openCreate}>
               <span className="btn__content">
                 <PlusIcon />
                 Nuevo partido
               </span>
             </button>
-          </div>
-        )}
+          )}
+        </div>
       </header>
 
       {error && (
