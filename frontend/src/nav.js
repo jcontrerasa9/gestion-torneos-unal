@@ -1,4 +1,4 @@
-import { CalendarIcon, CheckIcon, ShieldIcon, TrophyIcon, UserIcon } from './components/icons'
+import { AlertIcon, CalendarIcon, CheckIcon, ShieldIcon, TrophyIcon, UserIcon } from './components/icons'
 
 export const navItems = [
   { key: 'tournaments', label: 'Torneos', icon: TrophyIcon, roles: ['admin', 'captain', 'player', 'referee', 'student'] },
@@ -7,6 +7,7 @@ export const navItems = [
   { key: 'standings', label: 'Posiciones', icon: TrophyIcon, roles: ['admin', 'captain', 'player', 'referee', 'student'] },
   { key: 'scorers', label: 'Goleadores', icon: TrophyIcon, roles: ['admin', 'captain', 'player', 'referee', 'student'] },
   { key: 'match-events', label: 'Eventos', icon: CalendarIcon, roles: ['admin', 'referee'] },
+  { key: 'suspensions', label: 'Sanciones', icon: AlertIcon, roles: ['admin'] },
   { key: 'enrollment', label: 'Inscripciones', icon: CheckIcon, roles: ['admin', 'captain'] },
   { key: 'player-requests', label: 'Solicitudes', icon: UserIcon, roles: ['admin', 'captain', 'player'] },
 ]
