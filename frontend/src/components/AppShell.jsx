@@ -13,6 +13,7 @@ import MatchEventsPage from '../pages/MatchEventsPage'
 import ScorersPage from '../pages/ScorersPage'
 import SuspensionsPage from '../pages/SuspensionsPage'
 import RosterPage from '../pages/RosterPage'
+import RefereeDashboard from '../pages/RefereeDashboard'
 
 function NavRow({ items, view, setView }) {
   if (!items.length) return null
@@ -76,6 +77,7 @@ export default function AppShell() {
         {view === 'scorers' && <ScorersPage />}
         {view === 'roster' && <RosterPage />}
         {view === 'suspensions' && <SuspensionsPage />}
+        {view === 'referee' && <RefereeDashboard />}
         {view === 'match-events' && <MatchEventsPage />}
         {view === 'enrollment' && <EnrollmentPage />}
         {view === 'player-requests' && <PlayerRequestsPage />}
