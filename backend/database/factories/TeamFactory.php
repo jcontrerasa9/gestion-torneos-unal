@@ -13,34 +13,31 @@ class TeamFactory extends Factory
 {
     protected $model = Team::class;
 
-    /**
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
             'captain_id' => User::factory()->asCaptain(),
             'name' => fake()->unique()->randomElement([
-                'Atlético Nacional',
-                'Millonarios',
-                'Santa Fe',
-                'Junior',
-                'América de Cali',
-                'Deportivo Cali',
-                'Once Caldas',
-                'Independiente Medellín',
-                'Atlético Bucaramanga',
-                'Deportes Tolima',
-                'Envigado',
-                'Jaguares de Córdoba',
-                'Patriotas Boyacá',
-                'La Equidad',
-                'Boyacá Chicó',
-                'Cúcuta Deportivo',
-                'Llaneros',
-                'Real Cartagena',
-                'Tigres F.C.',
-                'Orsomarso',
+                'Los Ingenieros',
+                'La Macarena FC',
+                'Expreso Azul',
+                'Los Profesores',
+                'La Facultad',
+                'CDS La 45',
+                'Los Andes',
+                'Pumas UNAL',
+                'Equipo Grado 10',
+                'La Cantera',
+                'Los Deportistas',
+                'Futbol Club',
+                'Racing UNAL',
+                'Atlético Campus',
+                'La Normal',
+                'Deportivo Lab',
+                'Los Halcones',
+                'San Carlos FC',
+                'La 30 FC',
+                'Millonarios UNAL',
             ]),
             'logo' => null,
         ];
