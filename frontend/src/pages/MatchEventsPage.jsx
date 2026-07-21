@@ -33,9 +33,13 @@ const EVENT_OPTIONS = [
 // ── Table ──
 
 function EventsTable({ items, canManage, onEdit, onDelete }) {
+  const cols = canManage
+    ? 'minmax(0, 1.5fr) minmax(0, 0.8fr) minmax(80px, 0.5fr) auto minmax(0, 0.8fr) auto'
+    : 'minmax(0, 1.5fr) minmax(0, 0.8fr) minmax(80px, 0.5fr) auto minmax(0, 0.8fr)'
+
   return (
     <div className="table" role="table" aria-label="Eventos">
-      <div className="table__head" role="row">
+      <div className="table__head" role="row" style={{ gridTemplateColumns: cols }}>
         <div role="columnheader">Partido</div>
         <div role="columnheader">Jugador</div>
         <div role="columnheader">Evento</div>
@@ -45,7 +49,7 @@ function EventsTable({ items, canManage, onEdit, onDelete }) {
       </div>
 
       {items.map((e) => (
-        <div key={e.id} className="table__row" role="row">
+        <div key={e.id} className="table__row" role="row" style={{ gridTemplateColumns: cols }}>
           <div className="table__cell" role="cell">
             <div className="table__stack">
               <span style={{ fontWeight: 600 }}>
@@ -87,13 +91,15 @@ function EventsTable({ items, canManage, onEdit, onDelete }) {
 }
 
 function EventsSkeleton() {
+  const cols = 'minmax(0, 1.5fr) minmax(0, 0.8fr) minmax(80px, 0.5fr) auto minmax(0, 0.8fr)'
+
   return (
     <div className="table" aria-hidden="true">
-      <div className="table__head">
+      <div className="table__head" style={{ gridTemplateColumns: cols }}>
         <div>Partido</div><div>Jugador</div><div>Evento</div><div>Min.</div><div>Descripción</div>
       </div>
       {Array.from({ length: 5 }).map((_, i) => (
-        <div key={i} className="skeleton-row">
+        <div key={i} className="skeleton-row" style={{ gridTemplateColumns: cols }}>
           <span className="skeleton skeleton--md" />
           <span className="skeleton skeleton--md" />
           <span className="skeleton skeleton--sm" />
