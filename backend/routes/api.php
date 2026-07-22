@@ -32,6 +32,9 @@ Route::get('/scorers', [ScorerController::class, 'index'])->name('scorers.index'
 // Tournaments
 Route::apiResource('tournaments', TournamentController::class)->only(['index', 'show']);
 
+// Tournament Matches
+Route::apiResource('tournament-matches', TournamentMatchController::class)->only(['index', 'show']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
@@ -94,8 +97,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/tournaments/{tournament}', [TournamentController::class, 'destroy'])->name('tournaments.destroy');
     });
 
-    // Tournament Matches
-    Route::apiResource('tournament-matches', TournamentMatchController::class)->only(['index', 'show']);
 
     Route::middleware('role:admin')->group(function () {
         Route::post('/tournament-matches', [TournamentMatchController::class, 'store'])->name('tournament-matches.store');
