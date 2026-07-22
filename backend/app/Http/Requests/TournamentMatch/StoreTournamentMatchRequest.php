@@ -4,6 +4,7 @@ namespace App\Http\Requests\TournamentMatch;
 
 use App\Models\User;
 use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -15,7 +16,7 @@ class StoreTournamentMatchRequest extends FormRequest
     }
 
     /**
-     * @return array<string, array<int, \Illuminate\Contracts\Validation\ValidationRule|string>>
+     * @return array<string, array<int, ValidationRule|string>>
      */
     public function rules(): array
     {
@@ -37,7 +38,7 @@ class StoreTournamentMatchRequest extends FormRequest
             ],
             'match_date' => ['required', 'date'],
             'match_time' => ['required', 'date_format:H:i'],
-            'status' => ['required', 'string', 'in:programado,en_juego,finalizado,aplazado'],
+            'status' => ['nullable', 'string', 'in:programado,en_juego,finalizado,aplazado'],
         ];
     }
 
@@ -60,7 +61,6 @@ class StoreTournamentMatchRequest extends FormRequest
             'match_date.date' => 'The match date must be a valid date.',
             'match_time.required' => 'The match time is required.',
             'match_time.date_format' => 'The match time must be in HH:MM format.',
-            'status.required' => 'The match status is required.',
             'status.in' => 'The status must be one of: programado, en_juego, finalizado, aplazado.',
         ];
     }
