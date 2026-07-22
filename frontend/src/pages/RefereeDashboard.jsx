@@ -160,7 +160,7 @@ export default function RefereeDashboard() {
               </select>
               <input className="field__input field__input--plain" type="number" placeholder="Minuto"
                 value={form.minute} onChange={(e) => setForm((p) => ({ ...p, minute: e.target.value }))}
-                min={0} max={120} style={{ width: 90, flexShrink: 0 }} />
+                min={0} max={120} style={{ width: 100, flexShrink: 0 }} />
               <select className="field__select" value={form.player_id}
                 onChange={(e) => setForm((p) => ({ ...p, player_id: e.target.value }))}>
                 <option value="" disabled hidden>Jugador</option>
@@ -203,11 +203,11 @@ export default function RefereeDashboard() {
             <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
               <input className="field__input field__input--plain" type="number" placeholder="Goles local"
                 value={finishForm.home_score} onChange={(e) => setFinishForm((p) => ({ ...p, home_score: e.target.value }))}
-                style={{ width: 110 }} min={0} />
+                style={{ width: 120 }} min={0} />
               <span style={{ color: 'var(--text-dim)', fontWeight: 700 }}>—</span>
               <input className="field__input field__input--plain" type="number" placeholder="Visitante"
                 value={finishForm.away_score} onChange={(e) => setFinishForm((p) => ({ ...p, away_score: e.target.value }))}
-                style={{ width: 110 }} min={0} />
+                style={{ width: 120 }} min={0} />
               <button type="button" className="btn btn--primary btn--sm" onClick={handleFinalize} disabled={finalizing}
                 style={{ background: 'linear-gradient(135deg, #f43f5e 0%, #e11d48 100%)' }}>
                 {finalizing ? '…' : '🏁 Finalizar'}
