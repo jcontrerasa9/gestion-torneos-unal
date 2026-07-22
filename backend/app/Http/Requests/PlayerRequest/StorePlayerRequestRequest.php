@@ -39,8 +39,29 @@ class StorePlayerRequestRequest extends FormRequest
                 function (string $attribute, mixed $value, Closure $fail): void {
                     $tournamentTeam = TournamentTeam::find($value);
 
-                    if ($tournamentTeam && $tournamentTeam->team && $tournamentTeam->team->captain_id === $this->user()->id) {
+                    if (! $tournamentTeam) {
+                        return;
+                    }
+
+                    // No puede solicitar un equipo que ya capitanea
+                    if ($tournamentTeam->team && $tournamentTeam->team->captain_id === $this->user()->id) {
                         $fail('You cannot request admission to a team you already captain.');
+                        return;
+                    }
+
+                    // El torneo debe estar activo
+                    if ($tournamentTeam->tournament->status !== 'en_curso') {
+                        $fail('You can only request admission to teams in an active tournament.');
+                        return;
+                    }
+
+                    // El jugador no puede estar inscrito en otro equipo del mismo torneo
+                    $alreadyEnrolled = \App\Models\TournamentTeamPlayer::where('player_id', $this->input('player_id'))
+                        ->where('tournament_id', $tournamentTeam->tournament_id)
+                        ->exists();
+
+                    if ($alreadyEnrolled) {
+                        $fail('The player is already enrolled in another team in this tournament.');
                     }
                 },
             ],
