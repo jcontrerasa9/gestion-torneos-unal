@@ -8,8 +8,29 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreMatchEventRequest extends FormRequest
 {
+
     public function authorize(): bool
     {
+        $user = $this->user();
+
+        if ($user->role->name === 'admin') {
+            return true;
+        }
+
+        if ($user->role->name !== 'referee') {
+            throw new \Illuminate\Auth\Access\AuthorizationException(
+                'Only referees can create match events.'
+            );
+        }
+
+        $match = TournamentMatch::find($this->input('match_id'));
+
+        if (! $match || $match->referee_id !== $user->id) {
+            throw new \Illuminate\Auth\Access\AuthorizationException(
+                'You can only create events for matches you are assigned to.'
+            );
+        }
+
         return true;
     }
 
