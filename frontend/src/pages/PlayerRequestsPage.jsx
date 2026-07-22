@@ -13,7 +13,7 @@ const STATUS_LABEL = {
   rechazada: 'Rechazada',
 }
 
-function RequestsTable({ items, canManage, onApprove, onReject, onDelete }) {
+function RequestsTable({ items, canManage, onDelete, onAction }) {
   const cols = canManage
     ? 'minmax(0, 0.8fr) minmax(0, 1fr) minmax(50px, 0.4fr) minmax(80px, 0.5fr) minmax(80px, 0.5fr) minmax(90px, 0.6fr) auto'
     : 'minmax(0, 0.8fr) minmax(0, 1fr) minmax(50px, 0.4fr) minmax(80px, 0.5fr) minmax(80px, 0.5fr) minmax(90px, 0.6fr)'
@@ -76,7 +76,7 @@ function RequestsTable({ items, canManage, onApprove, onReject, onDelete }) {
                   <button
                     type="button"
                     className="icon-btn"
-                    onClick={() => onApprove(r)}
+                    onClick={() => onAction(r, 'approve')}
                     aria-label={`Aprobar solicitud de ${r.player?.first_name}`}
                     title="Aprobar"
                     style={{ color: '#86efac' }}
@@ -86,7 +86,7 @@ function RequestsTable({ items, canManage, onApprove, onReject, onDelete }) {
                   <button
                     type="button"
                     className="icon-btn"
-                    onClick={() => onReject(r)}
+                    onClick={() => onAction(r, 'reject')}
                     aria-label={`Rechazar solicitud de ${r.player?.first_name}`}
                     title="Rechazar"
                     style={{ color: '#fda4b1' }}
@@ -221,6 +221,21 @@ export default function PlayerRequestsPage() {
     }
   }
 
+  const [actionItem, setActionItem] = useState(null)
+  const [actionType, setActionType] = useState(null)
+
+  function openAction(item, type) {
+    setActionItem(item)
+    setActionType(type)
+  }
+
+  function handleActionConfirm() {
+    if (actionType === 'approve') handleApprove(actionItem)
+    else if (actionType === 'reject') handleReject(actionItem)
+    setActionItem(null)
+    setActionType(null)
+  }
+
   function openDelete(item) {
     setDeleting(item)
     setDeleteError(null)
@@ -290,8 +305,7 @@ export default function PlayerRequestsPage() {
             <RequestsTable
               items={items}
               canManage={canManage}
-              onApprove={handleApprove}
-              onReject={handleReject}
+              onAction={openAction}
               onDelete={openDelete}
             />
             <Pagination
@@ -322,6 +336,21 @@ export default function PlayerRequestsPage() {
         busy={deleteBusy}
         onConfirm={confirmDelete}
         onClose={() => setConfirmOpen(false)}
+      />
+
+      <ConfirmDialog
+        open={!!actionItem}
+        title={actionType === 'approve' ? 'Aprobar solicitud' : 'Rechazar solicitud'}
+        message={
+          actionItem
+            ? actionType === 'approve'
+              ? `¿Aprobar la solicitud de «${actionItem.player?.first_name}» para «${actionItem.tournament_team?.team?.name}»?`
+              : `¿Rechazar la solicitud de «${actionItem.player?.first_name}» para «${actionItem.tournament_team?.team?.name}»?`
+            : ''
+        }
+        confirmLabel={actionType === 'approve' ? 'Aprobar' : 'Rechazar'}
+        onConfirm={handleActionConfirm}
+        onClose={() => { setActionItem(null); setActionType(null) }}
       />
     </>
   )

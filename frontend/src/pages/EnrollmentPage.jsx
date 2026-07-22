@@ -19,7 +19,7 @@ const STATUS_LABEL = {
   rechazada: 'Rechazada',
 }
 
-function EnrollmentTable({ items, isAdmin, onApprove, onReject, onDelete }) {
+function EnrollmentTable({ items, isAdmin, onDelete, onAction }) {
   const cols = isAdmin
     ? 'minmax(0, 1fr) minmax(0, 1fr) minmax(80px, 0.6fr) minmax(100px, 0.7fr) auto'
     : 'minmax(0, 1fr) minmax(0, 1fr) minmax(80px, 0.6fr) minmax(100px, 0.7fr)'
@@ -61,7 +61,7 @@ function EnrollmentTable({ items, isAdmin, onApprove, onReject, onDelete }) {
                   <button
                     type="button"
                     className="icon-btn"
-                    onClick={() => onApprove(i)}
+                    onClick={() => onAction(i, 'approve')}
                     aria-label={`Aprobar ${i.team?.name} en ${i.tournament?.name}`}
                     title="Aprobar"
                     style={{ color: '#86efac' }}
@@ -71,7 +71,7 @@ function EnrollmentTable({ items, isAdmin, onApprove, onReject, onDelete }) {
                   <button
                     type="button"
                     className="icon-btn"
-                    onClick={() => onReject(i)}
+                    onClick={() => onAction(i, 'reject')}
                     aria-label={`Rechazar ${i.team?.name} en ${i.tournament?.name}`}
                     title="Rechazar"
                     style={{ color: '#fda4b1' }}
@@ -201,6 +201,21 @@ export default function EnrollmentPage() {
     }
   }
 
+  const [actionItem, setActionItem] = useState(null)
+  const [actionType, setActionType] = useState(null)
+
+  function openAction(item, type) {
+    setActionItem(item)
+    setActionType(type)
+  }
+
+  function handleActionConfirm() {
+    if (actionType === 'approve') handleApprove(actionItem)
+    else if (actionType === 'reject') handleReject(actionItem)
+    setActionItem(null)
+    setActionType(null)
+  }
+
   function openDelete(item) {
     setDeleting(item)
     setDeleteError(null)
@@ -268,8 +283,7 @@ export default function EnrollmentPage() {
             <EnrollmentTable
               items={items}
               isAdmin={isAdmin}
-              onApprove={handleApprove}
-              onReject={handleReject}
+              onAction={openAction}
               onDelete={openDelete}
             />
             <Pagination
@@ -300,6 +314,21 @@ export default function EnrollmentPage() {
         busy={deleteBusy}
         onConfirm={confirmDelete}
         onClose={() => setConfirmOpen(false)}
+      />
+
+      <ConfirmDialog
+        open={!!actionItem}
+        title={actionType === 'approve' ? 'Aprobar inscripción' : 'Rechazar inscripción'}
+        message={
+          actionItem
+            ? actionType === 'approve'
+              ? `¿Aprobar la inscripción de «${actionItem.team?.name}» en «${actionItem.tournament?.name}»?`
+              : `¿Rechazar la inscripción de «${actionItem.team?.name}» en «${actionItem.tournament?.name}»?`
+            : ''
+        }
+        confirmLabel={actionType === 'approve' ? 'Aprobar' : 'Rechazar'}
+        onConfirm={handleActionConfirm}
+        onClose={() => { setActionItem(null); setActionType(null) }}
       />
     </>
   )
