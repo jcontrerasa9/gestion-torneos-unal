@@ -153,9 +153,6 @@ export default function Landing() {
               <Link to={`/t/${featured.id}/posiciones`} className="btn btn--primary">
                 Ver posiciones
               </Link>
-              <Link to={`/t/${featured.id}/calendario`} className="btn btn--ghost">
-                Calendario
-              </Link>
             </div>
           </div>
 
@@ -189,9 +186,6 @@ export default function Landing() {
               <CalendarIcon />
               Próximos partidos
             </h2>
-            <Link to={`/t/${featured.id}/calendario`} className="section__link">
-              Calendario completo →
-            </Link>
           </div>
           <div className="match-cards">
             {upcoming.map((m) => (

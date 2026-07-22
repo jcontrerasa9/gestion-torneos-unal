@@ -16,11 +16,11 @@ export function fetchPublicTournament(id) {
 }
 
 export function fetchPublicStandings(tournamentId) {
-  return api.get(`/standings/tournament/${tournamentId}`, { auth: false })
+  return listAll(`/standings/tournament/${tournamentId}`, { auth: false })
 }
 
 export function fetchPublicScorers(tournamentId) {
-  return api.get(`/scorers?tournament_id=${tournamentId}`, { auth: false })
+  return listAll(`/scorers?tournament_id=${tournamentId}`, { auth: false })
 }
 
 export function fetchPublicMatches() {

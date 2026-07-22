@@ -1,6 +1,7 @@
 import { useOutletContext } from 'react-router-dom'
 import { useFetch } from '../../hooks/useFetch'
 import { fetchPublicScorers } from '../../api/public'
+import { itemsOf } from '../../api/helpers'
 import EmptyState from '../../components/ui/EmptyState'
 import { TableSkeleton } from '../../components/ui/TableSkeleton'
 import { AlertIcon, BallIcon } from '../../components/icons'
@@ -12,7 +13,7 @@ export default function PublicScorers() {
     () => fetchPublicScorers(tournamentId),
     { ttl: 60_000 },
   )
-  const scorers = data?.data ?? []
+  const scorers = itemsOf(data)
 
   if (status === 'loading') return <TableSkeleton rows={8} />
 
