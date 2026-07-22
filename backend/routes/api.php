@@ -4,6 +4,7 @@ use App\Http\Controllers\Discipline\SuspensionController;
 use App\Http\Controllers\Enrollment\PlayerRequestController;
 use App\Http\Controllers\Enrollment\TournamentTeamController;
 use App\Http\Controllers\Enrollment\TournamentTeamPlayerController;
+use App\Http\Controllers\Match\MatchCalendarController;
 use App\Http\Controllers\Match\MatchEventController;
 use App\Http\Controllers\Match\TournamentMatchController;
 use App\Http\Controllers\Statistics\ScorerController;
@@ -18,6 +19,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
+// Calendar feeds (public, RFC 5545 / iCalendar)
+Route::get('/calendar.ics', [MatchCalendarController::class, 'index'])->name('calendar.feed');
+Route::get('/tournaments/{tournament}/calendar.ics', [MatchCalendarController::class, 'show'])->name('tournaments.calendar');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
