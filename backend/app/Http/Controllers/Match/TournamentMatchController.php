@@ -53,6 +53,17 @@ class TournamentMatchController extends Controller
         ]);
     }
 
+    public function refereeMatches(): JsonResponse
+    {
+        $matches = TournamentMatch::with(['tournament', 'homeTeam', 'awayTeam', 'events.player'])
+            ->where('referee_id', auth()->id())
+            ->whereIn('status', ['programado', 'en_juego'])
+            ->latest()
+            ->get();
+
+        return response()->json(['data' => $matches]);
+    }
+
     public function destroy(DeleteTournamentMatchRequest $request, TournamentMatch $match): JsonResponse
     {
         $match->delete();

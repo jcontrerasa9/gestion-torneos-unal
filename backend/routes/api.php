@@ -103,6 +103,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::middleware('role:referee')->group(function () {
         Route::patch('/tournament-matches/{match}/results', [TournamentMatchController::class, 'updateResults'])->name('tournament-matches.results');
+        Route::get('/referee/matches', [TournamentMatchController::class, 'refereeMatches'])->name('referee.matches');
     });
 
     Route::middleware('role:admin,referee')->group(function () {
