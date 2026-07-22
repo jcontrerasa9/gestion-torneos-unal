@@ -68,7 +68,7 @@ class CalendarFeedService
 
     protected function buildEvent(TournamentMatch $match): Event
     {
-        $start = Carbon::parse($match->match_date->toDateString().' '.$match->match_time)
+        $start = Carbon::parse($match->match_date->toDateString().' '.$match->match_time->format('H:i'))
             ->setTimezone(self::TIMEZONE);
 
         $end = (clone $start)->addMinutes(self::MATCH_DURATION_MINUTES);
