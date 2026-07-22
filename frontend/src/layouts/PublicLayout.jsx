@@ -41,9 +41,6 @@ export default function PublicLayout() {
             {open ? <XIcon /> : <MenuIcon />}
           </button>
           <nav className={`pub__nav ${open ? 'is-open' : ''}`} aria-label="Navegación pública">
-            <NavLink to="/" end className={({ isActive }) => `pub__nav-link ${isActive ? 'is-active' : ''}`}>
-              Inicio
-            </NavLink>
             <NavLink to="/torneos" className={({ isActive }) => `pub__nav-link ${isActive ? 'is-active' : ''}`}>
               Torneos
             </NavLink>

@@ -94,14 +94,14 @@ export default function Landing() {
     () => fetchPublicStandings(featured.id),
     { ttl: TTL },
   )
-  const standings = standingsRes?.data ?? []
+  const standings = useMemo(() => itemsOf(standingsRes), [standingsRes])
 
   const { data: scorersRes } = useFetch(
     featured ? `public:scorers:${featured.id}` : null,
     () => fetchPublicScorers(featured.id),
     { ttl: TTL },
   )
-  const scorers = scorersRes?.data ?? []
+  const scorers = useMemo(() => itemsOf(scorersRes), [scorersRes])
 
   if (tournamentsStatus === 'loading') {
     return (

@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { api } from '../../api/client'
 import * as eventsApi from '../../api/match-events'
+import { invalidate } from '../../api/cache'
 import { listAll, itemsOf } from '../../api/helpers'
 import { useFetch } from '../../hooks/useFetch'
 import { useToast } from '../../components/ui/Toast'
@@ -42,12 +43,54 @@ export default function MatchRoomPage() {
   const navigate = useNavigate()
   const toast = useToast()
 
-  const { data: matchRes, status, error, refetch } = useFetch(
-    `referee:match:${matchId}`,
+  // Fuente principal: la lista del árbitro (comparte caché con "Mis partidos",
+  // así la sala abre al instante y con los equipos ya cargados).
+  const {
+    data: listRes,
+    status: listStatus,
+    error: listError,
+    refetch,
+  } = useFetch(
+    'referee:matches',
+    () => api.get('/referee/matches'),
+    { ttl: 15_000 },
+  )
+  const listMatch = useMemo(
+    () =>
+      (listRes?.data ?? []).find((m) => String(m.id) === String(matchId)) ??
+      null,
+    [listRes, matchId],
+  )
+
+  // Respaldo: endpoint de detalle (p. ej. partidos ya finalizados,
+  // que la lista del árbitro ya no devuelve).
+  const {
+    data: showRes,
+    status: showStatus,
+    error: showError,
+  } = useFetch(
+    listStatus === 'ready' && !listMatch ? `referee:match:${matchId}` : null,
     () => api.get(`/tournament-matches/${matchId}`),
     { ttl: 15_000 },
   )
-  const match = matchRes?.data ?? null
+
+  const match = listMatch ?? showRes?.data ?? null
+
+  let status = 'loading'
+  let error = null
+  if (listStatus === 'error') {
+    status = 'error'
+    error = listError
+  } else if (listMatch) {
+    status = 'ready'
+  } else if (listStatus === 'ready') {
+    if (showStatus === 'error') {
+      status = 'error'
+      error = showError
+    } else if (showStatus === 'ready') {
+      status = 'ready' // match puede ser null: se muestra "no disponible"
+    }
+  }
 
   const { data: rosterRes } = useFetch(
     match ? `roster:tournament:${match.tournament_id}` : null,
@@ -88,9 +131,11 @@ export default function MatchRoomPage() {
   }, [events, rosterByPlayer, match])
 
   const finished = match?.status === 'finalizado'
-  const score = finished
-    ? { home: match.home_score ?? 0, away: match.away_score ?? 0 }
-    : liveScore
+  // En juego: marcador de los eventos si los hay; si no, el guardado en el partido.
+  const score =
+    finished || events.length === 0
+      ? { home: match?.home_score ?? 0, away: match?.away_score ?? 0 }
+      : liveScore
 
   // ---- Estado del flujo de registro ----
   const [eventType, setEventType] = useState('gol')
@@ -184,6 +229,7 @@ export default function MatchRoomPage() {
         away_score: away,
         status: 'finalizado',
       })
+      invalidate('referee:matches')
       toast.success('Partido finalizado. Resultado oficial registrado.')
       navigate('/app/arbitraje', { replace: true })
     } catch (err) {
@@ -206,7 +252,8 @@ export default function MatchRoomPage() {
       <div className="page">
         <div className="error-banner" role="alert">
           <AlertIcon />
-          {error?.message ?? 'No pudimos cargar el partido.'}
+          {error?.message ??
+            'Este partido no está disponible. Es posible que ya haya finalizado o que no esté asignado a ti.'}
           <button type="button" className="btn btn--ghost btn--sm" onClick={refetch}>
             Reintentar
           </button>

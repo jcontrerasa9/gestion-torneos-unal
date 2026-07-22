@@ -4,6 +4,7 @@ import { api } from '../../api/client'
 import { listAll, itemsOf } from '../../api/helpers'
 import { useFetch } from '../../hooks/useFetch'
 import { useRole } from '../../hooks/useRole'
+import { useAuth } from '../../context/useAuth'
 import PageHeader from '../../components/ui/PageHeader'
 import Button from '../../components/ui/Button'
 import ConfirmDialog from '../../components/ui/ConfirmDialog'
@@ -14,7 +15,14 @@ import { AlertIcon, EditIcon, ShieldIcon, TrashIcon, UsersIcon, PlusIcon } from 
 
 export default function TeamsPage() {
   const { isAdmin, isCaptain } = useRole()
+  const { user } = useAuth()
   const navigate = useNavigate()
+
+  // El capitán solo gestiona y ve la plantilla de su propio equipo.
+  const isOwnTeam = (t) =>
+    String(t.captain_id ?? t.captain?.id ?? '') === String(user?.id ?? '')
+  const canViewRoster = (t) => !isCaptain || isOwnTeam(t)
+  const canEditTeam = (t) => isAdmin || (isCaptain && isOwnTeam(t))
   const [modalOpen, setModalOpen] = useState(false)
   const [editing, setEditing] = useState(null)
   const [deleting, setDeleting] = useState(null)
@@ -106,16 +114,18 @@ export default function TeamsPage() {
                   </td>
                   <td>
                     <div className="table__actions">
-                      <button
-                        type="button"
-                        className="icon-btn"
-                        aria-label={`Ver plantilla de ${t.name}`}
-                        title="Ver plantilla"
-                        onClick={() => navigate(`/app/equipos/${t.id}`)}
-                      >
-                        <UsersIcon />
-                      </button>
-                      {(isAdmin || isCaptain) && (
+                      {canViewRoster(t) && (
+                        <button
+                          type="button"
+                          className="icon-btn"
+                          aria-label={`Ver plantilla de ${t.name}`}
+                          title="Ver plantilla"
+                          onClick={() => navigate(`/app/equipos/${t.id}`)}
+                        >
+                          <UsersIcon />
+                        </button>
+                      )}
+                      {canEditTeam(t) && (
                         <button
                           type="button"
                           className="icon-btn"

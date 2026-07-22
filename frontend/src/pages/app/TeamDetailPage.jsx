@@ -4,6 +4,7 @@ import { api } from '../../api/client'
 import { listAll, itemsOf } from '../../api/helpers'
 import { useFetch } from '../../hooks/useFetch'
 import { useRole } from '../../hooks/useRole'
+import { useAuth } from '../../context/useAuth'
 import PageHeader from '../../components/ui/PageHeader'
 import Button from '../../components/ui/Button'
 import Badge from '../../components/ui/Badge'
@@ -16,7 +17,7 @@ import { ArrowLeftIcon, BanIcon, CheckIcon, EditIcon, TrashIcon, UsersIcon } fro
 export default function TeamDetailPage() {
   const { id } = useParams()
   const { isAdmin, isCaptain } = useRole()
-  const canManage = isAdmin || isCaptain
+  const { user } = useAuth()
 
   const { data: teamRes, status: teamStatus, refetch: refetchTeam } = useFetch(
     `app:team:${id}`,
@@ -24,6 +25,13 @@ export default function TeamDetailPage() {
     { ttl: 60_000 },
   )
   const team = teamRes?.data ?? null
+
+  // El capitán solo puede ver y gestionar su propio equipo.
+  const isOwnTeam =
+    team != null &&
+    String(team.captain_id ?? team.captain?.id ?? '') === String(user?.id ?? '')
+  const canView = !isCaptain || isOwnTeam
+  const canManage = isAdmin || (isCaptain && isOwnTeam)
 
   const { data: rosterRes, status: rosterStatus, refetch: refetchRoster } = useFetch(
     'app:roster',
@@ -83,7 +91,20 @@ export default function TeamDetailPage() {
 
       {teamStatus === 'loading' && <TableSkeleton />}
 
-      {team && (
+      {teamStatus === 'ready' && team && !canView && (
+        <EmptyState
+          icon={UsersIcon}
+          title="Este equipo no te pertenece"
+          text="Como capitán solo puedes ver la plantilla de tu propio equipo."
+          action={
+            <Link to="/app/equipos" className="btn btn--primary">
+              Volver a equipos
+            </Link>
+          }
+        />
+      )}
+
+      {team && canView && (
         <>
           <PageHeader
             eyebrow="Equipo"

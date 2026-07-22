@@ -41,6 +41,8 @@ function buildInitial(match, fixedTournamentId) {
     return {
       ...EMPTY,
       tournament_id: fixedTournamentId ? String(fixedTournamentId) : '',
+      // Al crear solo se permite "programado" (aunque el backend acepte más).
+      status: 'programado',
     }
   }
   return {
@@ -231,9 +233,15 @@ export default function MatchFormModal({ open, match, fixedTournamentId, onClose
           label="Estado"
           value={form.status}
           onChange={update('status')}
-          options={STATUS_OPTIONS}
+          options={
+            editing
+              ? STATUS_OPTIONS
+              : STATUS_OPTIONS.filter((o) => o.value === 'programado')
+          }
           placeholder="Selecciona un estado"
           required
+          disabled={!editing}
+          hint={!editing ? 'Los partidos nuevos siempre se crean como programados.' : undefined}
           error={errors.status?.[0]}
         />
         {isAdmin && (
