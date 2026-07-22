@@ -13,7 +13,7 @@ Antes de ejecutar el proyecto, asegúrese de tener instalado:
 ## Clonar el repositorio
 
 ```bash
-git clone <URL_DEL_REPOSITORIO>
+git clone https://github.com/jcontrerasa9/gestion-torneos-unal.git
 cd gestion-torneos-unal
 ```
 
