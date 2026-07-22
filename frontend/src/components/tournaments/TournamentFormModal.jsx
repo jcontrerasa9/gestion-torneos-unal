@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import * as tournamentsApi from '../../api/tournaments'
-import { useAuth } from '../../context/useAuth'
+import { api } from '../../api/client'
+import { useMutation } from '../../hooks/useMutation'
 import Modal from '../ui/Modal'
-import FormField from '../ui/FormField'
+import Button from '../ui/Button'
+import Field from '../ui/Field'
 import SelectField from '../ui/SelectField'
 import TextAreaField from '../ui/TextAreaField'
-import SubmitButton from '../ui/SubmitButton'
 import { AlertIcon } from '../icons'
 import { tournamentLabels } from '../../utils/format'
 
@@ -24,10 +24,10 @@ const STATUS_OPTIONS = [
 const EMPTY = {
   name: '',
   modality: '',
-  description: '',
+  status: '',
   start_date: '',
   end_date: '',
-  status: '',
+  description: '',
 }
 
 function buildInitial(tournament) {
@@ -35,25 +35,17 @@ function buildInitial(tournament) {
   return {
     name: tournament.name ?? '',
     modality: tournament.modality ?? '',
-    description: tournament.description ?? '',
+    status: tournament.status ?? '',
     start_date: tournament.start_date?.slice(0, 10) ?? '',
     end_date: tournament.end_date?.slice(0, 10) ?? '',
-    status: tournament.status ?? '',
+    description: tournament.description ?? '',
   }
 }
 
-export default function TournamentFormModal({
-  open,
-  tournament,
-  onClose,
-  onSaved,
-}) {
-  const { user } = useAuth()
+export default function TournamentFormModal({ open, tournament, onClose, onSaved }) {
   const editing = Boolean(tournament)
-  const canManage = user?.role?.name === 'admin'
 
   const [form, setForm] = useState(EMPTY)
-  const [submitting, setSubmitting] = useState(false)
   const [errors, setErrors] = useState({})
   const [globalError, setGlobalError] = useState(null)
 
@@ -65,70 +57,69 @@ export default function TournamentFormModal({
     }
   }, [open, tournament])
 
+  const { run, busy } = useMutation(
+    (payload) =>
+      editing
+        ? api.put(`/tournaments/${tournament.id}`, payload)
+        : api.post('/tournaments', payload),
+    {
+      invalidate: ['app:tournaments'],
+      successMessage: editing ? 'Cambios guardados' : 'Torneo creado',
+      onSuccess: () => {
+        onSaved?.()
+        onClose?.()
+      },
+    },
+  )
+
   function update(field) {
     return (e) => setForm((f) => ({ ...f, [field]: e.target.value }))
   }
 
   async function handleSubmit(event) {
     event.preventDefault()
-    setSubmitting(true)
     setErrors({})
     setGlobalError(null)
+    const payload = { ...form }
+    if (!payload.description) delete payload.description
     try {
-      const payload = { ...form }
-      if (!payload.description) delete payload.description
-      const data = editing
-        ? await tournamentsApi.update(tournament.id, payload)
-        : await tournamentsApi.create(payload)
-      onSaved?.(data.data)
-      onClose?.()
+      await run(payload)
     } catch (err) {
       if (err.status === 422 && err.data?.errors) {
         setErrors(err.data.errors)
       } else {
         setGlobalError(err.message)
       }
-    } finally {
-      setSubmitting(false)
     }
   }
-
-  const title = editing ? 'Editar torneo' : 'Nuevo torneo'
-  const submitLabel = editing ? 'Guardar cambios' : 'Crear torneo'
 
   return (
     <Modal
       open={open}
-      title={title}
+      title={editing ? 'Editar torneo' : 'Nuevo torneo'}
       onClose={onClose}
       footer={
         <>
-          <button
-            type="button"
-            className="btn btn--ghost"
-            onClick={onClose}
-            disabled={submitting}
-          >
+          <Button variant="ghost" onClick={onClose} disabled={busy}>
             Cancelar
-          </button>
-          <SubmitButton loading={submitting} disabled={!canManage} form="tournament-form">
-            {submitLabel}
-          </SubmitButton>
+          </Button>
+          <Button type="submit" form="tournament-form" busy={busy}>
+            {editing ? 'Guardar cambios' : 'Crear torneo'}
+          </Button>
         </>
       }
     >
       {globalError && (
-        <div className="auth__error modal__error" role="alert">
+        <div className="form-error-banner" role="alert" style={{ marginBottom: 14 }}>
           <AlertIcon />
           {globalError}
         </div>
       )}
 
-      <form id="tournament-form" className="auth__form" onSubmit={handleSubmit} noValidate>
-        <FormField
+      <form id="tournament-form" className="form-grid" onSubmit={handleSubmit} noValidate>
+        <Field
+          className="field--full"
           label="Nombre"
-          name="name"
-          iconType="text"
           value={form.name}
           onChange={update('name')}
           placeholder="Torneo Interfacultades 2026"
@@ -136,57 +127,50 @@ export default function TournamentFormModal({
           error={errors.name?.[0]}
         />
 
-        <div className="auth__row">
-          <SelectField
-            label="Modalidad"
-            name="modality"
-            value={form.modality}
-            onChange={update('modality')}
-            options={MODALITY_OPTIONS}
-            placeholder="Selecciona una modalidad"
-            required
-            error={errors.modality?.[0]}
-          />
-          <SelectField
-            label="Estado"
-            name="status"
-            value={form.status}
-            onChange={update('status')}
-            options={STATUS_OPTIONS}
-            placeholder="Selecciona un estado"
-            required
-            error={errors.status?.[0]}
-          />
-        </div>
+        <SelectField
+          label="Modalidad"
+          value={form.modality}
+          onChange={update('modality')}
+          options={MODALITY_OPTIONS}
+          placeholder="Selecciona una modalidad"
+          required
+          error={errors.modality?.[0]}
+        />
+        <SelectField
+          label="Estado"
+          value={form.status}
+          onChange={update('status')}
+          options={STATUS_OPTIONS}
+          placeholder="Selecciona un estado"
+          required
+          error={errors.status?.[0]}
+        />
 
-        <div className="auth__row">
-          <FormField
-            label="Fecha de inicio"
-            name="start_date"
-            type="date"
-            value={form.start_date}
-            onChange={update('start_date')}
-            required
-            error={errors.start_date?.[0]}
-          />
-          <FormField
-            label="Fecha de fin"
-            name="end_date"
-            type="date"
-            value={form.end_date}
-            onChange={update('end_date')}
-            required
-            error={errors.end_date?.[0]}
-          />
-        </div>
+        <Field
+          label="Fecha de inicio"
+          type="date"
+          value={form.start_date}
+          onChange={update('start_date')}
+          required
+          error={errors.start_date?.[0]}
+        />
+        <Field
+          label="Fecha de fin"
+          type="date"
+          value={form.end_date}
+          onChange={update('end_date')}
+          required
+          error={errors.end_date?.[0]}
+        />
 
         <TextAreaField
+          className="field--full"
           label="Descripción"
-          name="description"
           value={form.description}
           onChange={update('description')}
           placeholder="Detalles del reglamento, formato, número de grupos…"
           rows={3}
+          hint="Opcional"
           error={errors.description?.[0]}
         />
       </form>

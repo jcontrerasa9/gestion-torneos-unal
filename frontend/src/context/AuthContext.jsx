@@ -5,7 +5,6 @@ import { AuthContext } from './authStore'
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
 
   useEffect(() => {
     let active = true
@@ -24,27 +23,15 @@ export function AuthProvider({ children }) {
   }, [])
 
   const login = useCallback(async (credentials) => {
-    setError(null)
-    try {
-      const u = await authApi.login(credentials)
-      setUser(u)
-      return u
-    } catch (err) {
-      setError(err.message)
-      throw err
-    }
+    const u = await authApi.login(credentials)
+    setUser(u)
+    return u
   }, [])
 
   const register = useCallback(async (payload) => {
-    setError(null)
-    try {
-      const u = await authApi.register(payload)
-      setUser(u)
-      return u
-    } catch (err) {
-      setError(err.message)
-      throw err
-    }
+    const u = await authApi.register(payload)
+    setUser(u)
+    return u
   }, [])
 
   const logout = useCallback(async () => {
@@ -52,9 +39,14 @@ export function AuthProvider({ children }) {
     setUser(null)
   }, [])
 
+  /** Llamado por el cliente API cuando el token expira o es inválido. */
+  const expireSession = useCallback(() => {
+    setUser(null)
+  }, [])
+
   const value = useMemo(
-    () => ({ user, loading, error, login, register, logout }),
-    [user, loading, error, login, register, logout],
+    () => ({ user, loading, login, register, logout, expireSession }),
+    [user, loading, login, register, logout, expireSession],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

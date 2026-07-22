@@ -13,7 +13,28 @@ export function setToken(token) {
   }
 }
 
-async function request(path, { method = 'GET', body, auth = true } = {}) {
+/**
+ * Handler registrado por la capa de React (providers) para reaccionar
+ * cuando el servidor rechaza el token (401): limpiar sesión y redirigir.
+ */
+let onUnauthorized = null
+export function setUnauthorizedHandler(fn) {
+  onUnauthorized = fn
+}
+
+/**
+ * Handler para 403: el usuario está autenticado pero sin permisos.
+ * NO cierra sesión; solo notifica a la capa de React (SE-2).
+ */
+let onForbidden = null
+export function setForbiddenHandler(fn) {
+  onForbidden = fn
+}
+
+async function request(
+  path,
+  { method = 'GET', body, auth = true, signal } = {},
+) {
   const headers = {}
   if (body !== undefined) {
     headers['Content-Type'] = 'application/json'
@@ -29,7 +50,17 @@ async function request(path, { method = 'GET', body, auth = true } = {}) {
     method,
     headers,
     body: body !== undefined ? JSON.stringify(body) : undefined,
+    signal,
   })
+
+  if (response.status === 401 && auth) {
+    setToken(null)
+    onUnauthorized?.()
+  }
+
+  if (response.status === 403) {
+    onForbidden?.()
+  }
 
   if (response.status === 204) {
     return null
@@ -38,9 +69,11 @@ async function request(path, { method = 'GET', body, auth = true } = {}) {
   const data = await response.json().catch(() => null)
 
   if (!response.ok) {
-    const error = new Error(
-      (data && data.message) || `Request failed (${response.status})`,
-    )
+    let message = data && data.message
+    if (!message && response.status === 403) {
+      message = 'No tienes permisos para realizar esta acción.'
+    }
+    const error = new Error(message || `Error de solicitud (${response.status})`)
     error.status = response.status
     error.data = data
     throw error

@@ -1,6 +1,9 @@
-export default function Badge({ variant = 'neutral', children, withDot = false }) {
+export default function Badge({ variant, withDot = false, children }) {
+  const cls = ['badge', variant ? `badge--${variant}` : '']
+    .filter(Boolean)
+    .join(' ')
   return (
-    <span className={`badge badge--${variant}`}>
+    <span className={cls}>
       {withDot && <span className="badge__dot" aria-hidden="true" />}
       {children}
     </span>

@@ -1,76 +1,70 @@
 import { useEffect, useState } from 'react'
-import * as prApi from '../../api/player-requests'
 import { useAuth } from '../../context/useAuth'
 import { api } from '../../api/client'
+import { listAll, itemsOf } from '../../api/helpers'
+import { useMutation } from '../../hooks/useMutation'
 import Modal from '../ui/Modal'
+import Field from '../ui/Field'
 import SelectField from '../ui/SelectField'
-import FormField from '../ui/FormField'
-import SubmitButton from '../ui/SubmitButton'
+import Button from '../ui/Button'
 import { AlertIcon } from '../icons'
 
-const POSITIONS = [
+const POSITION_OPTIONS = [
   { value: 'Portero', label: 'Portero' },
   { value: 'Defensa', label: 'Defensa' },
   { value: 'Mediocampista', label: 'Mediocampista' },
   { value: 'Delantero', label: 'Delantero' },
 ]
 
-const EMPTY = { tournament_team_id: '', jersey_number: '', position: '' }
-
 export default function PlayerRequestFormModal({ open, onClose, onSaved }) {
   const { user } = useAuth()
-
-  const [form, setForm] = useState(EMPTY)
-  const [submitting, setSubmitting] = useState(false)
+  const [form, setForm] = useState({ tournament_team_id: '', jersey_number: '', position: '' })
+  const [enrollments, setEnrollments] = useState([])
   const [errors, setErrors] = useState({})
   const [globalError, setGlobalError] = useState(null)
-  const [tournamentTeams, setTournamentTeams] = useState([])
+
+  const { run: save, busy } = useMutation(
+    (payload) => api.post('/player-requests', payload),
+    { invalidate: ['app:requests'], successMessage: 'Solicitud enviada' },
+  )
 
   useEffect(() => {
     if (!open) return
-    setForm({ ...EMPTY })
+    setForm({ tournament_team_id: '', jersey_number: '', position: '' })
     setErrors({})
     setGlobalError(null)
-    api.get('/tournament-teams?page=1').then((r) => {
-      const approved = (r.data.data || []).filter((t) => t.status === 'aprobada')
-      setTournamentTeams(approved)
-    }).catch(() => {})
+    listAll('/tournament-teams')
+      .then((r) => setEnrollments(itemsOf(r).filter((e) => e.status === 'aprobada')))
+      .catch((err) => {
+        setEnrollments([])
+        setGlobalError(`No pudimos cargar las inscripciones: ${err.message}`)
+      })
   }, [open])
 
   function update(field) {
     return (e) => setForm((f) => ({ ...f, [field]: e.target.value }))
   }
 
-  async function handleSubmit(event) {
-    event.preventDefault()
-    setSubmitting(true)
+  async function handleSubmit(e) {
+    e.preventDefault()
     setErrors({})
     setGlobalError(null)
     try {
-      const payload = {
-        ...form,
-        player_id: user.id,
-        jersey_number: form.jersey_number || null,
-      }
-      if (!payload.jersey_number) delete payload.jersey_number
-      if (!payload.position) delete payload.position
-      await prApi.create(payload)
+      const payload = { tournament_team_id: Number(form.tournament_team_id), player_id: user.id }
+      if (form.jersey_number) payload.jersey_number = Number(form.jersey_number)
+      if (form.position) payload.position = form.position
+      await save(payload)
       onSaved?.()
       onClose?.()
     } catch (err) {
-      if (err.status === 422 && err.data?.errors) {
-        setErrors(err.data.errors)
-      } else {
-        setGlobalError(err.message)
-      }
-    } finally {
-      setSubmitting(false)
+      if (err.status === 422 && err.data?.errors) setErrors(err.data.errors)
+      else setGlobalError(err.message)
     }
   }
 
-  const teamOpts = tournamentTeams.map((t) => ({
-    value: t.id,
-    label: `${t.team?.name} — ${t.tournament?.name}`,
+  const teamOpts = enrollments.map((e) => ({
+    value: e.id,
+    label: `${e.team?.name} — ${e.tournament?.name}`,
   }))
 
   return (
@@ -80,60 +74,45 @@ export default function PlayerRequestFormModal({ open, onClose, onSaved }) {
       onClose={onClose}
       footer={
         <>
-          <button
-            type="button"
-            className="btn btn--ghost"
-            onClick={onClose}
-            disabled={submitting}
-          >
-            Cancelar
-          </button>
-          <SubmitButton loading={submitting} form="pr-form">
-            Enviar solicitud
-          </SubmitButton>
+          <Button variant="ghost" onClick={onClose} disabled={busy}>Cancelar</Button>
+          <Button type="submit" form="pr-form" busy={busy}>Enviar solicitud</Button>
         </>
       }
     >
       {globalError && (
-        <div className="auth__error modal__error" role="alert">
+        <div className="form-error-banner" role="alert">
           <AlertIcon />
           {globalError}
         </div>
       )}
-
-      <form id="pr-form" className="auth__form" onSubmit={handleSubmit} noValidate>
+      <form id="pr-form" className="form-grid" onSubmit={handleSubmit} noValidate>
         <SelectField
-          label="Equipo · Torneo"
-          name="tournament_team_id"
+          label="Equipo y torneo"
           value={form.tournament_team_id}
           onChange={update('tournament_team_id')}
           options={teamOpts}
           placeholder="Selecciona un equipo inscrito"
           required
           error={errors.tournament_team_id?.[0]}
+          className="field--full"
         />
-
-        <div className="auth__row">
-          <FormField
-            label="Dorsal"
-            name="jersey_number"
-            type="number"
-            value={form.jersey_number}
-            onChange={update('jersey_number')}
-            placeholder="10"
-            hint="Número de camiseta (opcional)"
-            error={errors.jersey_number?.[0]}
-          />
-          <SelectField
-            label="Posición"
-            name="position"
-            value={form.position}
-            onChange={update('position')}
-            options={POSITIONS}
-            placeholder="Elige posición"
-            error={errors.position?.[0]}
-          />
-        </div>
+        <Field
+          label="Dorsal"
+          type="number"
+          min={0}
+          value={form.jersey_number}
+          onChange={update('jersey_number')}
+          placeholder="Opcional"
+          error={errors.jersey_number?.[0]}
+        />
+        <SelectField
+          label="Posición"
+          value={form.position}
+          onChange={update('position')}
+          options={POSITION_OPTIONS}
+          placeholder="Selecciona (opcional)"
+          error={errors.position?.[0]}
+        />
       </form>
     </Modal>
   )

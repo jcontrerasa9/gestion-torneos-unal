@@ -1,27 +1,33 @@
-import { AlertIcon, CalendarIcon, CheckIcon, ShieldIcon, TrophyIcon, UserIcon } from './components/icons'
+import {
+  BanIcon,
+  CalendarIcon,
+  CheckIcon,
+  FlagIcon,
+  HomeIcon,
+  ShieldIcon,
+  TrophyIcon,
+  UserIcon,
+  WhistleIcon,
+} from './components/icons'
 
-export const navItems = [
-  { key: 'tournaments', label: 'Torneos', icon: TrophyIcon, roles: ['admin', 'captain', 'player', 'referee', 'student'], row: 'primary' },
-  { key: 'teams', label: 'Equipos', icon: ShieldIcon, roles: ['admin', 'captain', 'player', 'referee', 'student'], row: 'primary' },
-  { key: 'matches', label: 'Partidos', icon: CalendarIcon, roles: ['admin', 'captain', 'player', 'referee', 'student'], row: 'primary' },
-  { key: 'standings', label: 'Posiciones', icon: TrophyIcon, roles: ['admin', 'captain', 'player', 'referee', 'student'], row: 'primary' },
-  { key: 'scorers', label: 'Goleadores', icon: TrophyIcon, roles: ['admin', 'captain', 'player', 'referee', 'student'], row: 'primary' },
-  { key: 'roster', label: 'Plantilla', icon: UserIcon, roles: ['admin', 'captain', 'player'], row: 'secondary' },
-  { key: 'referee', label: 'Arbitraje', icon: CalendarIcon, roles: ['referee'], row: 'secondary' },
-  { key: 'match-events', label: 'Eventos', icon: CalendarIcon, roles: ['admin'], row: 'secondary' },
-  { key: 'suspensions', label: 'Sanciones', icon: AlertIcon, roles: ['admin'], row: 'secondary' },
-  { key: 'enrollment', label: 'Inscripciones', icon: CheckIcon, roles: ['admin', 'captain'], row: 'secondary' },
-  { key: 'player-requests', label: 'Solicitudes', icon: UserIcon, roles: ['admin', 'captain', 'player'], row: 'secondary' },
+const ALL = ['admin', 'captain', 'player', 'referee', 'student']
+
+/**
+ * Navegación de la app. `mobile: true` la fija en la bottom-bar;
+ * el resto va al sheet "Más" en móvil y a la sidebar en desktop.
+ */
+export const appNav = [
+  { to: '/app', label: 'Inicio', icon: HomeIcon, roles: ALL, end: true, mobile: true },
+  { to: '/app/torneos', label: 'Torneos', icon: TrophyIcon, roles: ALL, mobile: true },
+  { to: '/app/partidos', label: 'Partidos', icon: CalendarIcon, roles: ALL, mobile: true },
+  { to: '/app/equipos', label: 'Equipos', icon: ShieldIcon, roles: ALL, mobile: true },
+  { to: '/app/arbitraje', label: 'Arbitraje', icon: WhistleIcon, roles: ['referee'], mobile: true },
+  { to: '/app/inscripciones', label: 'Inscripciones', icon: CheckIcon, roles: ['admin', 'captain'] },
+  { to: '/app/solicitudes', label: 'Solicitudes', icon: UserIcon, roles: ['admin', 'captain', 'player'] },
+  { to: '/app/eventos', label: 'Eventos', icon: FlagIcon, roles: ['admin'] },
+  { to: '/app/sanciones', label: 'Sanciones', icon: BanIcon, roles: ['admin'] },
 ]
 
-export function filterNavForRole(roleName) {
-  return navItems.filter((item) => item.roles.includes(roleName))
-}
-
-export function navByRow(roleName) {
-  const filtered = filterNavForRole(roleName)
-  return {
-    primary: filtered.filter((i) => i.row === 'primary'),
-    secondary: filtered.filter((i) => i.row === 'secondary'),
-  }
+export function navForRole(role) {
+  return appNav.filter((item) => item.roles.includes(role))
 }

@@ -24,6 +24,14 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/calendar.ics', [MatchCalendarController::class, 'index'])->name('calendar.feed');
 Route::get('/tournaments/{tournament}/calendar.ics', [MatchCalendarController::class, 'show'])->name('tournaments.calendar');
 
+// Standings
+Route::get('/standings', [StandingController::class, 'index'])->name('standings.index');
+Route::get('/standings/tournament/{tournament}', [StandingController::class, 'show'])->name('standings.show');
+// Scorers
+Route::get('/scorers', [ScorerController::class, 'index'])->name('scorers.index');
+// Tournaments
+Route::apiResource('tournaments', TournamentController::class)->only(['index', 'show']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
@@ -80,12 +88,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/tournament-teams/{tournamentTeam}', [TournamentTeamController::class, 'destroy'])->name('tournament-teams.destroy');
     });
 
-    // Standings
-    Route::get('/standings', [StandingController::class, 'index'])->name('standings.index');
-    Route::get('/standings/tournament/{tournament}', [StandingController::class, 'show'])->name('standings.show');
-    // Tournaments
-    Route::apiResource('tournaments', TournamentController::class)->only(['index', 'show']);
-
     Route::middleware('role:admin')->group(function () {
         Route::post('/tournaments', [TournamentController::class, 'store'])->name('tournaments.store');
         Route::put('/tournaments/{tournament}', [TournamentController::class, 'update'])->name('tournaments.update');
@@ -126,9 +128,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/match-events/{event}', [MatchEventController::class, 'update'])->name('match-events.update');
         Route::delete('/match-events/{event}', [MatchEventController::class, 'destroy'])->name('match-events.destroy');
     });
-
-    // Scorers
-    Route::get('/scorers', [ScorerController::class, 'index'])->name('scorers.index');
 
     // Suspensions
     Route::get('/suspensions', [SuspensionController::class, 'index'])->name('suspensions.index');

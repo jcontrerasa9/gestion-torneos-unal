@@ -1,41 +1,51 @@
 import { useEffect, useState } from 'react'
-import * as enrollmentApi from '../../api/tournament-teams'
 import { api } from '../../api/client'
+import { listAll, itemsOf } from '../../api/helpers'
+import { useFetch } from '../../hooks/useFetch'
+import { useMutation } from '../../hooks/useMutation'
 import Modal from '../ui/Modal'
+import Button from '../ui/Button'
 import SelectField from '../ui/SelectField'
-import SubmitButton from '../ui/SubmitButton'
 import { AlertIcon } from '../icons'
 
-const EMPTY = { tournament_id: '', team_id: '' }
-
-function buildInitial(item) {
-  if (!item) return { ...EMPTY }
-  return {
-    tournament_id: item.tournament_id ?? '',
-    team_id: item.team_id ?? '',
-  }
-}
-
-export default function EnrollmentFormModal({ open, item, onClose, onSaved }) {
-  const editing = Boolean(item)
-
-  const [form, setForm] = useState(EMPTY)
-  const [submitting, setSubmitting] = useState(false)
+export default function EnrollmentFormModal({ open, fixedTournamentId, onClose, onSaved }) {
+  const [form, setForm] = useState({ tournament_id: '', team_id: '' })
   const [errors, setErrors] = useState({})
   const [globalError, setGlobalError] = useState(null)
 
-  const [tournaments, setTournaments] = useState([])
-  const [teams, setTeams] = useState([])
+  const { data: tournamentsRes } = useFetch(
+    open ? 'app:tournaments' : null,
+    () => listAll('/tournaments'),
+    { ttl: 60_000 },
+  )
+  const { data: teamsRes } = useFetch(
+    open ? 'app:teams' : null,
+    () => listAll('/teams'),
+    { ttl: 60_000 },
+  )
 
   useEffect(() => {
-    if (!open) return
-    setForm(buildInitial(item))
-    setErrors({})
-    setGlobalError(null)
+    if (open) {
+      setForm({
+        tournament_id: fixedTournamentId ? String(fixedTournamentId) : '',
+        team_id: '',
+      })
+      setErrors({})
+      setGlobalError(null)
+    }
+  }, [open, fixedTournamentId])
 
-    api.get('/tournaments?page=1').then((r) => setTournaments(r.data.data)).catch(() => {})
-    api.get('/teams?page=1').then((r) => setTeams(r.data.data)).catch(() => {})
-  }, [open, item])
+  const { run, busy } = useMutation(
+    (payload) => api.post('/tournament-teams', payload),
+    {
+      invalidate: ['app:enrollments'],
+      successMessage: 'Inscripción solicitada',
+      onSuccess: () => {
+        onSaved?.()
+        onClose?.()
+      },
+    },
+  )
 
   function update(field) {
     return (e) => setForm((f) => ({ ...f, [field]: e.target.value }))
@@ -43,74 +53,64 @@ export default function EnrollmentFormModal({ open, item, onClose, onSaved }) {
 
   async function handleSubmit(event) {
     event.preventDefault()
-    setSubmitting(true)
     setErrors({})
     setGlobalError(null)
     try {
-      if (editing) {
-        await enrollmentApi.update(item.id, form)
-      } else {
-        await enrollmentApi.create(form)
-      }
-      onSaved?.()
-      onClose?.()
+      await run({ tournament_id: form.tournament_id, team_id: form.team_id })
     } catch (err) {
       if (err.status === 422 && err.data?.errors) {
         setErrors(err.data.errors)
       } else {
         setGlobalError(err.message)
       }
-    } finally {
-      setSubmitting(false)
     }
   }
 
-  const tournamentOpts = tournaments.map((t) => ({ value: t.id, label: t.name }))
-  const teamOpts = teams.map((t) => ({ value: t.id, label: t.name }))
+  const tournamentOpts = itemsOf(tournamentsRes).map((t) => ({
+    value: String(t.id),
+    label: t.name,
+  }))
+  const teamOpts = itemsOf(teamsRes).map((t) => ({ value: String(t.id), label: t.name }))
 
   return (
     <Modal
       open={open}
-      title={editing ? 'Editar inscripción' : 'Nueva inscripción'}
+      title="Nueva inscripción"
       onClose={onClose}
       footer={
         <>
-          <button
-            type="button"
-            className="btn btn--ghost"
-            onClick={onClose}
-            disabled={submitting}
-          >
+          <Button variant="ghost" onClick={onClose} disabled={busy}>
             Cancelar
-          </button>
-          <SubmitButton loading={submitting} form="enrollment-form">
-            {editing ? 'Guardar' : 'Inscribir equipo'}
-          </SubmitButton>
+          </Button>
+          <Button type="submit" form="enrollment-form" busy={busy}>
+            Inscribir equipo
+          </Button>
         </>
       }
     >
       {globalError && (
-        <div className="auth__error modal__error" role="alert">
+        <div className="form-error-banner" role="alert" style={{ marginBottom: 14 }}>
           <AlertIcon />
           {globalError}
         </div>
       )}
 
-      <form id="enrollment-form" className="auth__form" onSubmit={handleSubmit} noValidate>
+      <form id="enrollment-form" className="form-grid" onSubmit={handleSubmit} noValidate>
         <SelectField
+          className="field--full"
           label="Torneo"
-          name="tournament_id"
           value={form.tournament_id}
           onChange={update('tournament_id')}
           options={tournamentOpts}
           placeholder="Selecciona un torneo"
           required
+          disabled={Boolean(fixedTournamentId)}
           error={errors.tournament_id?.[0]}
         />
 
         <SelectField
+          className="field--full"
           label="Equipo"
-          name="team_id"
           value={form.team_id}
           onChange={update('team_id')}
           options={teamOpts}

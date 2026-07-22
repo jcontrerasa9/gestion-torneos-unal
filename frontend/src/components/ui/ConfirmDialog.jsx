@@ -1,52 +1,51 @@
 import Modal from './Modal'
+import Button from './Button'
 import { AlertIcon } from '../icons'
 
+/**
+ * Diálogo de confirmación para acciones irreversibles (US-2).
+ * Soporta estado async (busy + error inline).
+ */
 export default function ConfirmDialog({
   open,
   title,
   message,
-  confirmLabel = 'Eliminar',
+  confirmLabel = 'Confirmar',
+  danger = true,
   busy = false,
   error,
   onConfirm,
   onClose,
+  children,
 }) {
   return (
     <Modal
       open={open}
       title={title}
-      onClose={onClose}
+      onClose={busy ? undefined : onClose}
       footer={
         <>
-          <button
-            type="button"
-            className="btn btn--ghost"
-            onClick={onClose}
-            disabled={busy}
-          >
+          <Button variant="ghost" onClick={onClose} disabled={busy}>
             Cancelar
-          </button>
-          <button
-            type="button"
-            className="btn btn--danger"
+          </Button>
+          <Button
+            variant={danger ? 'danger' : 'primary'}
             onClick={onConfirm}
-            disabled={busy}
+            busy={busy}
           >
-            <span className="btn__content">
-              {busy && <span className="btn__spinner" aria-hidden="true" />}
-              {busy ? 'Eliminando…' : confirmLabel}
-            </span>
-          </button>
+            {confirmLabel}
+          </Button>
         </>
       }
     >
       <div className="confirm">
-        <span className="confirm__icon" aria-hidden="true">
+        <span className={`confirm__icon ${danger ? 'is-danger' : ''}`} aria-hidden="true">
           <AlertIcon />
         </span>
         {message && <p className="confirm__message">{message}</p>}
+        {children}
         {error && (
-          <div className="auth__error confirm__error" role="alert">
+          <div className="form-error-banner" role="alert">
             <AlertIcon />
             {error}
           </div>

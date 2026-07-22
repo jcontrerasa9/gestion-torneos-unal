@@ -1,40 +1,59 @@
 import { useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { XIcon } from '../icons'
 
-export default function Modal({ open, title, onClose, children, footer }) {
-  const ref = useRef(null)
+export default function Modal({ open, title, onClose, footer, children }) {
+  const dialogRef = useRef(null)
 
   useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    if (open && !el.open) el.showModal()
-    if (!open && el.open) el.close()
+    if (!open) return
+    const previous = document.activeElement
+    document.body.style.overflow = 'hidden'
+    const focusable = dialogRef.current?.querySelector(
+      'input, select, textarea, button:not([disabled])',
+    )
+    focusable?.focus()
+    return () => {
+      document.body.style.overflow = ''
+      previous?.focus?.()
+    }
   }, [open])
 
   useEffect(() => {
     if (!open) return
-    function onKey(e) {
+    function onKeyDown(e) {
       if (e.key === 'Escape') onClose?.()
     }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
   }, [open, onClose])
 
-  return (
-    <dialog ref={ref} className="modal" aria-label={title}>
-      <div className="modal__head">
-        <h2 className="modal__title">{title}</h2>
-        <button
-          type="button"
-          className="modal__close"
-          onClick={onClose}
-          aria-label="Cerrar"
-        >
-          <XIcon />
-        </button>
+  if (!open) return null
+
+  return createPortal(
+    <div className="modal-overlay" onMouseDown={(e) => e.target === e.currentTarget && onClose?.()}>
+      <div
+        className="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        ref={dialogRef}
+      >
+        <div className="modal__head">
+          <h2 className="modal__title">{title}</h2>
+          <button
+            type="button"
+            className="icon-btn"
+            onClick={onClose}
+            aria-label="Cerrar"
+          >
+            <XIcon />
+          </button>
+        </div>
+        <div className="modal__body">{children}</div>
+        {footer && <div className="modal__foot">{footer}</div>}
       </div>
-      <div className="modal__body">{children}</div>
-      {footer && <div className="modal__foot">{footer}</div>}
-    </dialog>
+    </div>,
+    document.body,
   )
 }

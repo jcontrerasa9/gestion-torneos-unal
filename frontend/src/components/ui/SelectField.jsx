@@ -1,33 +1,34 @@
+import { useId } from 'react'
+import { AlertIcon } from '../icons'
+
 export default function SelectField({
   label,
-  name,
-  value,
-  onChange,
-  options,
-  placeholder,
   required,
-  disabled,
-  hint,
   error,
+  hint,
+  options = [],
+  placeholder,
+  className = '',
+  ...selectProps
 }) {
+  const id = useId()
   return (
-    <div className="field">
+    <div className={`field ${className}`.trim()}>
       {label && (
-        <label htmlFor={name} className="field__label">
+        <label className="field__label" htmlFor={id}>
           {label}
+          {required && <span className="field__label-required" aria-hidden="true">*</span>}
         </label>
       )}
       <select
-        id={name}
-        name={name}
-        className="field__select"
-        value={value}
-        onChange={onChange}
+        id={id}
+        className={`field__select ${error ? 'field__select--invalid' : ''}`.trim()}
+        aria-invalid={error ? true : undefined}
         required={required}
-        disabled={disabled}
+        {...selectProps}
       >
-        {placeholder && (
-          <option value="" disabled hidden>
+        {placeholder !== undefined && (
+          <option value="" disabled>
             {placeholder}
           </option>
         )}
@@ -37,8 +38,14 @@ export default function SelectField({
           </option>
         ))}
       </select>
-      {hint && !error && <span className="field__hint">{hint}</span>}
-      {error && <span className="field__error">{error}</span>}
+      {error ? (
+        <span className="field__error" role="alert">
+          <AlertIcon width={13} height={13} />
+          {error}
+        </span>
+      ) : (
+        hint && <span className="field__hint">{hint}</span>
+      )}
     </div>
   )
 }
